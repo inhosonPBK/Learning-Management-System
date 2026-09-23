@@ -187,7 +187,22 @@
     "watchers": "추가 열람자",
     "addWatcher": "추가",
     "coMentor": "공동 멘토",
-    "observer": "열람자"
+    "observer": "열람자",
+    "deleteProgram": "프로그램 삭제",
+    "deleteProgramHint": "등록 {enrollments}건 · 보고서 {reports}건 · 파일 {files}개가 함께 영구 삭제됩니다. 정상 종료된 프로그램은 삭제 대신 상태를 '종료'로 바꾸세요.",
+    "deleteProgramConfirm": "\"{name}\" 프로그램을 삭제할까요?\n\n등록 {enrollments}건과 보고서 {reports}건, 첨부 파일이 모두 영구 삭제되며 복구할 수 없습니다."
+  },
+  "todos": {
+    "title": "해야 할 일",
+    "count": "{count}건",
+    "empty": "처리할 항목이 없습니다 🎉",
+    "viewAll": "대시보드에서 전체 보기",
+    "review": "{who} · {week}주차 주간보고서 리뷰",
+    "draftWeekly": "{week}주차 주간보고서 초안 — 제출 필요",
+    "draftInterview": "면담보고서 초안 — 제출 필요",
+    "weeklyDue": "이번 주({week}주차) 주간보고서 작성",
+    "noMentor": "{who} · 멘토 미배정",
+    "kind": { "review": "리뷰", "draft": "초안", "weekly_due": "이번 주", "no_mentor": "배정" }
   },
   "files": {
     "upload": "파일 업로드",
@@ -216,6 +231,7 @@
     "interview": "면담보고서",
     "pendingShort": "리뷰 대기",
     "printLog": "면담일지 출력",
+    "documents": "문서",
     "write": "작성",
     "weekGrid": "주차 그리드",
     "myWeeklyTitle": "내 주간 교육 보고서",
@@ -287,6 +303,7 @@
     "title": "대시보드",
     "greeting": "안녕하세요, {name}님",
     "actionRequired": "처리 필요",
+    "actionRequiredHint": "{count}건 — 상단 🔔 아이콘에서도 확인할 수 있어요",
     "myTraining": "내 교육",
     "myMentees": "내 멘티",
     "myTeam": "내 팀",
@@ -342,6 +359,8 @@
     "fieldAudienceHint": "비워두면 전체 공통 자료로 표시됩니다",
     "fieldPublish": "공개 여부",
     "fieldPublishHint": "비공개 시 작성자와 관리자만 볼 수 있습니다",
+    "enrollmentDocs": "교육 등록 문서",
+    "enrollmentDocsHint": "내가 볼 수 있는 피교육자의 교육훈련계획서·JD (권한 범위 내)",
     "attachments": "첨부 파일",
     "attachmentsHint": "클릭하면 다운로드됩니다 (링크는 1분간 유효)",
     "noAttachments": "첨부된 파일이 없습니다",

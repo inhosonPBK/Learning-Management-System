@@ -67,6 +67,38 @@ export async function updateProgram(id: string, _p: ActionState, fd: FormData): 
   return { ok: true };
 }
 
+/**
+ * Hard-delete a program with everything under it (enrollments → reports cascade; files removed
+ * from storage). Intended for test/mistaken programs — finished programs should be set to "closed".
+ */
+export async function deleteProgram(id: string, _p?: ActionState, _fd?: FormData): Promise<ActionState> {
+  const viewer = await requireStaff();
+  const admin = createAdminClient();
+  const { data: program } = await admin.from("programs").select("name_en").eq("id", id).maybeSingle<{ name_en: string }>();
+  if (!program) return { error: "Not found" };
+
+  const { data: enrollments } = await admin.from("enrollments").select("id").eq("program_id", id);
+  const enrollmentIds = (enrollments ?? []).map((e) => e.id);
+  let files = 0;
+  if (enrollmentIds.length) {
+    const { data: atts } = await admin.from("attachments").select("id, storage_path").eq("owner_type", "enrollment").in("owner_id", enrollmentIds);
+    if (atts?.length) {
+      await admin.storage.from("documents").remove(atts.map((a) => a.storage_path));
+      await admin.from("attachments").delete().in("id", atts.map((a) => a.id));
+      files = atts.length;
+    }
+  }
+  const { count: reports } = await admin.from("reports").select("id", { count: "exact", head: true }).in("enrollment_id", enrollmentIds.length ? enrollmentIds : ["00000000-0000-0000-0000-000000000000"]);
+  const { error } = await admin.from("programs").delete().eq("id", id);
+  if (error) return { error: error.message };
+
+  await logAudit(viewer.id, "program.delete", "program", id, { name: program.name_en, enrollments: enrollmentIds.length, reports: reports ?? 0, files });
+  revalidatePath("/admin/programs");
+  revalidatePath("/reports");
+  revalidatePath("/dashboard");
+  redirect("/admin/programs");
+}
+
 // ── Enrollments ────────────────────────────────────────────────────────────
 
 export async function enrollTrainee(programId: string, _p: ActionState, fd: FormData): Promise<ActionState> {

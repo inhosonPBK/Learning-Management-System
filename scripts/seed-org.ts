@@ -38,7 +38,7 @@ const admin = createClient(url, key, { auth: { autoRefreshToken: false, persistS
 // ── Constants ────────────────────────────────────────────────────────────
 const FLAGS = {
   admin: ['inho.son@promega.com'],
-  people_ops: ['youla.lee@promega.com', 'hyesong.choi@promega.com', 'youngjun.lee@promega.com'],
+  people_ops: ['youla.lee@promega.com', 'hyesong.choi@promega.com'],
   gm: ['jeunga.na@promega.com'],
 }
 /** Proposed Korean team names (editable later in /admin/teams). Keyed by org_tree "Dept name". */

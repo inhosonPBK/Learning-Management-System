@@ -14,7 +14,7 @@ export default async function ReportsHubPage() {
   const hub = await getHubData(viewer, locale);
   const oversight = viewer.isAdmin || viewer.isPeopleOps || viewer.isGm;
 
-  const labels = { weekly: t("weekly"), interview: t("interview"), mentor: tc("mentor"), pending: t("pendingShort"), week: tc("week"), print: t("printLog") };
+  const labels = { weekly: t("weekly"), interview: t("interview"), mentor: tc("mentor"), pending: t("pendingShort"), week: tc("week"), print: t("printLog"), docs: t("documents") };
   const shownAll = hub.all.filter((a) => ![...hub.mine, ...hub.mentees, ...hub.team].some((x) => x.enrollmentId === a.enrollmentId));
   const nothing = !hub.mine.length && !hub.mentees.length && !hub.team.length && !shownAll.length;
 

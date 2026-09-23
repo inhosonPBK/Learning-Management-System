@@ -3,12 +3,13 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowRight, BookOpen, ClipboardCheck, FileText, Settings2, Users } from "lucide-react";
 import { requireViewer } from "@/lib/auth/viewer";
 import { getHubData } from "@/lib/data/hub";
+import { getTodos } from "@/lib/data/todos";
+import { TodoList } from "@/components/dashboard/todo-list";
 import { getProfilesMap } from "@/lib/data/org";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatDateTime } from "@/lib/weeks";
 import { Container, SectionHeading } from "@/components/page-header";
 import { EnrollmentCard, type EnrollmentCardData } from "@/components/reports/enrollment-card";
-import { Badge } from "@/components/ui/badge";
 import type { AuditLog, Locale } from "@/types/db";
 
 export default async function DashboardPage() {
@@ -18,8 +19,7 @@ export default async function DashboardPage() {
   const tr = await getTranslations("reports");
   const tn = await getTranslations("nav");
   const tc = await getTranslations("common");
-  const ts = await getTranslations("status");
-  const hub = await getHubData(viewer, locale);
+  const [hub, todos] = await Promise.all([getHubData(viewer, locale), getTodos(viewer)]);
   const oversight = viewer.isAdmin || viewer.isPeopleOps || viewer.isGm;
   const staff = viewer.isAdmin || viewer.isPeopleOps;
 
@@ -30,9 +30,8 @@ export default async function DashboardPage() {
   const activity = (auditRows ?? []) as AuditLog[];
   const actors = await getProfilesMap(activity.map((a) => a.actor_id ?? ""));
 
-  const labels = { weekly: tr("weekly"), interview: tr("interview"), mentor: tc("mentor"), pending: tr("pendingShort"), week: tc("week"), print: tr("printLog") };
-  const pendingCount = hub.pendingReviews.length;
-  const cardByEnrollment = new Map<string, EnrollmentCardData>([...hub.mentees, ...hub.team, ...hub.all].map((c) => [c.enrollmentId, c]));
+  const labels = { weekly: tr("weekly"), interview: tr("interview"), mentor: tc("mentor"), pending: tr("pendingShort"), week: tc("week"), print: tr("printLog"), docs: tr("documents") };
+  const pendingCount = todos.filter((x) => x.kind === "review").length;
 
   const quick = [
     { href: "/reports", icon: FileText, label: tn("reports"), sub: t("quickReports"), color: "text-brand-blue" },
@@ -71,34 +70,10 @@ export default async function DashboardPage() {
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="space-y-10 lg:col-span-2">
-          {(pendingCount > 0 || hub.myDrafts.length > 0) && (
+          {todos.length > 0 && (
             <section>
-              <SectionHeading title={t("actionRequired")} />
-              <ul className="divide-y rounded-xl border bg-white">
-                {hub.pendingReviews.map((r) => (
-                  <li key={r.id}>
-                    <Link href={`/reports/weekly/${r.enrollment_id}/${r.period_index}`} className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-muted/50">
-                      <Badge className="bg-brand-yellow text-brand-navy-deep">{tr("pendingShort")}</Badge>
-                      <span className="font-medium">{cardByEnrollment.get(r.enrollment_id)?.traineeName ?? "—"}</span>
-                      <span className="text-muted-foreground">· {tc("weekN", { n: r.period_index ?? 0 })}</span>
-                      <ArrowRight className="ml-auto size-4 text-muted-foreground" />
-                    </Link>
-                  </li>
-                ))}
-                {hub.myDrafts.map((r) => (
-                  <li key={r.id}>
-                    <Link
-                      href={r.report_type === "weekly" ? `/reports/weekly/${r.enrollment_id}/${r.period_index}` : `/reports/interview/${r.enrollment_id}/${r.id}`}
-                      className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-muted/50"
-                    >
-                      <Badge variant="outline" className="text-status-draft">{ts("draft")}</Badge>
-                      <span className="font-medium">{r.report_type === "weekly" ? tr("weekly") : tr("interview")}</span>
-                      {r.period_index && <span className="text-muted-foreground">· {tc("weekN", { n: r.period_index })}</span>}
-                      <ArrowRight className="ml-auto size-4 text-muted-foreground" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <SectionHeading title={t("actionRequired")} description={t("actionRequiredHint", { count: todos.length })} />
+              <TodoList todos={todos} />
             </section>
           )}
 

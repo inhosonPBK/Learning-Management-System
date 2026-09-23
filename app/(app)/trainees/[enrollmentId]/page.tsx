@@ -63,6 +63,24 @@ export default async function TraineeOverviewPage({ params }: { params: Promise<
         }
       />
 
+      {/* Documents first — the training plan / JD files are what trainees and viewers open most */}
+      <Card id="documents" className="mb-6 scroll-mt-24 border-brand-gold/40">
+        <CardContent className="pt-6">
+          <SectionHeading
+            title={tp("documents")}
+            description={tp("documentsHint")}
+            actions={canManageDocs ? <FileUploader ownerType="enrollment" ownerId={enrollment.id} kinds={docKinds} compact accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.txt,.md" /> : undefined}
+          />
+          <AttachmentList
+            attachments={documents}
+            canManage={canManageDocs}
+            locale={locale}
+            kindLabels={Object.fromEntries(docKinds.map((k) => [k.value, k.label]))}
+            emptyText={tp("noDocuments")}
+          />
+        </CardContent>
+      </Card>
+
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-1">
           <CardContent className="space-y-3 pt-6 text-sm">
@@ -77,19 +95,6 @@ export default async function TraineeOverviewPage({ params }: { params: Promise<
 
         <Card className="lg:col-span-2">
           <CardContent className="pt-6">
-            <SectionHeading
-              title={tp("documents")}
-              description={tp("documentsHint")}
-              actions={canManageDocs ? <FileUploader ownerType="enrollment" ownerId={enrollment.id} kinds={docKinds} compact accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.txt,.md" /> : undefined}
-            />
-            <AttachmentList
-              attachments={documents}
-              canManage={canManageDocs}
-              locale={locale}
-              kindLabels={Object.fromEntries(docKinds.map((k) => [k.value, k.label]))}
-              emptyText={tp("noDocuments")}
-              className="mb-6"
-            />
             <SectionHeading title={tp("jd")} />
             <p className="whitespace-pre-wrap text-sm text-foreground/90">{enrollment.jd_text || <span className="text-muted-foreground">—</span>}</p>
             <SectionHeading title={tp("planSummary")} />

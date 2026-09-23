@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FileText, MessageSquareText, Printer } from "lucide-react";
+import { FileText, MessageSquareText, Paperclip, Printer } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { initialsOf } from "@/components/shell/nav-config";
@@ -18,9 +18,10 @@ export interface EnrollmentCardData {
   stats: EnrollmentStats;
   status: "active" | "completed" | "withdrawn";
   enabledTypes: string[];
+  docsCount: number;
 }
 
-export function EnrollmentCard({ d, labels, showPrint }: { d: EnrollmentCardData; labels: { weekly: string; interview: string; mentor: string; pending: string; week: string; print: string }; showPrint: boolean }) {
+export function EnrollmentCard({ d, labels, showPrint }: { d: EnrollmentCardData; labels: { weekly: string; interview: string; mentor: string; pending: string; week: string; print: string; docs: string }; showPrint: boolean }) {
   const pct = Math.round((d.stats.weeklyCompleted / Math.max(1, d.totalWeeks)) * 100);
   return (
     <div className="flex flex-col rounded-xl border bg-white p-5 transition-shadow hover:shadow-md">
@@ -62,6 +63,11 @@ export function EnrollmentCard({ d, labels, showPrint }: { d: EnrollmentCardData
         {d.enabledTypes.includes("interview") && (
           <Link href={`/reports/interview/${d.enrollmentId}`} className="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 font-medium hover:bg-muted">
             <MessageSquareText className="size-3.5" />{labels.interview} <span className="text-muted-foreground">{d.stats.interviews}</span>
+          </Link>
+        )}
+        {d.docsCount > 0 && (
+          <Link href={`/trainees/${d.enrollmentId}#documents`} className="inline-flex items-center gap-1.5 rounded-lg border border-brand-gold/50 bg-amber-50 px-2.5 py-1.5 font-medium text-amber-900 hover:bg-amber-100">
+            <Paperclip className="size-3.5" />{labels.docs} <span className="text-amber-700">{d.docsCount}</span>
           </Link>
         )}
         {showPrint && d.enabledTypes.includes("interview") && (

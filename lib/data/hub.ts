@@ -3,6 +3,7 @@ import type { Viewer } from "@/lib/auth/viewer";
 import { getEnrollmentsByIds, getEnrollmentsForTrainees, programLabel, type EnrollmentWithProgram } from "@/lib/data/programs";
 import { getReportsForEnrollments, summarize } from "@/lib/data/reports";
 import { getProfilesMap, getTeams, teamLabel } from "@/lib/data/org";
+import { getAttachmentsForOwners } from "@/lib/files/data";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { currentWeek, totalWeeks } from "@/lib/weeks";
 import type { EnrollmentCardData } from "@/components/reports/enrollment-card";
@@ -13,6 +14,8 @@ export interface HubData {
   mentees: EnrollmentCardData[];
   team: EnrollmentCardData[];
   all: EnrollmentCardData[];
+  /** every enrollment the viewer may see (deduped) */
+  visibleEnrollmentIds: string[];
   /** submitted weekly reports awaiting the viewer's review */
   pendingReviews: Report[];
   /** viewer's own weekly drafts */
@@ -32,10 +35,11 @@ export async function getHubData(viewer: Viewer, locale: Locale): Promise<HubDat
 
   const every = dedupe([...mine, ...mentees, ...team, ...all]);
   // Second stage: three independent lookups in parallel (one network round trip instead of three).
-  const [reports, profiles, teamRows] = await Promise.all([
+  const [reports, profiles, teamRows, docs] = await Promise.all([
     getReportsForEnrollments(every.map((e) => e.id)),
     getProfilesMap(every.flatMap((e) => [e.trainee_id, e.mentor_id ?? ""])),
     getTeams(),
+    getAttachmentsForOwners("enrollment", every.map((e) => e.id)),
   ]);
   const teams = new Map(teamRows.map((t) => [t.code, t]));
 
@@ -54,6 +58,7 @@ export async function getHubData(viewer: Viewer, locale: Locale): Promise<HubDat
       stats: summarize(rs),
       status: e.status,
       enabledTypes: e.program.enabled_report_types,
+      docsCount: docs.filter((d) => d.owner_id === e.id).length,
     };
   };
 
@@ -63,6 +68,7 @@ export async function getHubData(viewer: Viewer, locale: Locale): Promise<HubDat
     mentees: mentees.map(toCard),
     team: team.filter((e) => !menteeIds.has(e.id)).map(toCard),
     all: all.map(toCard),
+    visibleEnrollmentIds: every.map((e) => e.id),
     pendingReviews: reports.filter((r) => r.report_type === "weekly" && r.status === "submitted" && menteeIds.has(r.enrollment_id)),
     myDrafts: reports.filter((r) => r.author_id === viewer.id && r.status === "draft"),
   };

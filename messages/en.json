@@ -187,7 +187,22 @@
     "watchers": "Additional viewers",
     "addWatcher": "Add",
     "coMentor": "Co-mentor",
-    "observer": "Observer"
+    "observer": "Observer",
+    "deleteProgram": "Delete program",
+    "deleteProgramHint": "Permanently deletes {enrollments} enrollment(s), {reports} report(s) and {files} file(s). For finished programs, set the status to Closed instead.",
+    "deleteProgramConfirm": "Delete \"{name}\"?\n\n{enrollments} enrollment(s), {reports} report(s) and all attachments will be permanently deleted. This cannot be undone."
+  },
+  "todos": {
+    "title": "To do",
+    "count": "{count}",
+    "empty": "Nothing to do 🎉",
+    "viewAll": "View all on the dashboard",
+    "review": "{who} · review week {week} report",
+    "draftWeekly": "Week {week} weekly report draft — submit",
+    "draftInterview": "Interview report draft — submit",
+    "weeklyDue": "Write this week's (week {week}) report",
+    "noMentor": "{who} · no mentor assigned",
+    "kind": { "review": "Review", "draft": "Draft", "weekly_due": "This week", "no_mentor": "Assign" }
   },
   "files": {
     "upload": "Upload files",
@@ -216,6 +231,7 @@
     "interview": "Interview reports",
     "pendingShort": "To review",
     "printLog": "Print interview log",
+    "documents": "Documents",
     "write": "write",
     "weekGrid": "Week grid",
     "myWeeklyTitle": "My weekly training reports",
@@ -287,6 +303,7 @@
     "title": "Dashboard",
     "greeting": "Hello, {name}",
     "actionRequired": "Action required",
+    "actionRequiredHint": "{count} item(s) — also available from the 🔔 icon",
     "myTraining": "My training",
     "myMentees": "My mentees",
     "myTeam": "My team",
@@ -342,6 +359,8 @@
     "fieldAudienceHint": "Leave empty for general content",
     "fieldPublish": "Visibility",
     "fieldPublishHint": "Unpublished items are visible only to the author and staff",
+    "enrollmentDocs": "Enrollment documents",
+    "enrollmentDocsHint": "Training plans and JDs of trainees you may view",
     "attachments": "Attachments",
     "attachmentsHint": "Click to download (links are valid for 1 minute)",
     "noAttachments": "No files attached",

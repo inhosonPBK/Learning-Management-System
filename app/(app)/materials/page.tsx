@@ -6,6 +6,9 @@ import { canCreateMaterial } from "@/lib/auth/permissions";
 import { categoryLabel, getMaterialCategories, listMaterials } from "@/lib/data/materials";
 import { getAttachmentsForOwners } from "@/lib/files/data";
 import { getProfilesMap } from "@/lib/data/org";
+import { getHubData } from "@/lib/data/hub";
+import { AttachmentList } from "@/components/files/attachment-list";
+import { SectionHeading } from "@/components/page-header";
 import { formatDate } from "@/lib/weeks";
 import { Container, PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
@@ -28,7 +31,16 @@ export default async function MaterialsPage({ searchParams }: { searchParams: Pr
     getMaterialCategories(),
     listMaterials({ category: category || undefined, q: q.trim() || undefined, includeDraftsBy: viewer.id, includeAllDrafts: viewer.isAdmin || viewer.isPeopleOps }),
   ]);
-  const [files, authors] = await Promise.all([getAttachmentsForOwners("material", materials.map((m) => m.id)), getProfilesMap(materials.map((m) => m.author_id ?? ""))]);
+  const [files, authors, hub] = await Promise.all([
+    getAttachmentsForOwners("material", materials.map((m) => m.id)),
+    getProfilesMap(materials.map((m) => m.author_id ?? "")),
+    getHubData(viewer, locale),
+  ]);
+  // Enrollment documents (training plans, JDs) the viewer is entitled to see — grouped by trainee.
+  const enrollmentDocs = await getAttachmentsForOwners("enrollment", hub.visibleEnrollmentIds);
+  const cardById = new Map([...hub.mine, ...hub.mentees, ...hub.team, ...hub.all].map((c) => [c.enrollmentId, c]));
+  const docGroups = [...new Set(enrollmentDocs.map((d) => d.owner_id))].map((eid) => ({ card: cardById.get(eid), docs: enrollmentDocs.filter((d) => d.owner_id === eid) })).filter((g) => g.card);
+  const docKindLabels = { training_plan: tp("docTrainingPlan"), jd: tp("docJd"), other: tp("docOther") };
   const catMap = new Map(categories.map((c) => [c.code, c]));
   const countBy = (code: string) => materials.filter((m) => m.category_code === code && m.is_published).length;
   const typeLabel: Record<string, string> = { intern: tp("typeIntern"), new_hire: tp("typeNewHire"), ojt: tp("typeOjt") };
@@ -40,6 +52,23 @@ export default async function MaterialsPage({ searchParams }: { searchParams: Pr
         description={t("subtitle")}
         actions={canCreateMaterial(viewer) ? <Button nativeButton={false} render={<Link href="/materials/new" />}><Plus />{t("newMaterial")}</Button> : undefined}
       />
+
+      {docGroups.length > 0 && !category && !q && (
+        <section className="mb-8">
+          <SectionHeading title={t("enrollmentDocs")} description={t("enrollmentDocsHint")} />
+          <div className="grid gap-4 md:grid-cols-2">
+            {docGroups.map(({ card, docs }) => (
+              <div key={card!.enrollmentId} className="rounded-xl border bg-white p-4">
+                <div className="mb-2 flex items-center justify-between">
+                  <Link href={`/trainees/${card!.enrollmentId}#documents`} className="text-sm font-semibold text-brand-navy hover:underline">{card!.traineeName}</Link>
+                  <span className="text-xs text-muted-foreground">{card!.programName}</span>
+                </div>
+                <AttachmentList attachments={docs} canManage={false} locale={locale} kindLabels={docKindLabels} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Category tiles (DAM-style) */}
       <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">

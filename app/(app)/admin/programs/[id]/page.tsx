@@ -21,7 +21,7 @@ import { FileUploader } from "@/components/files/file-uploader";
 import { AttachmentList } from "@/components/files/attachment-list";
 import { Field } from "../../users/profile-fields";
 import { ProgramFields } from "../program-fields";
-import { addWatcher, enrollTrainee, removeWatcher, updateEnrollment, updateProgram } from "../actions";
+import { addWatcher, deleteProgram, enrollTrainee, removeWatcher, updateEnrollment, updateProgram } from "../actions";
 import type { EnrollmentWatcher, Locale } from "@/types/db";
 
 export default async function ProgramDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -40,9 +40,12 @@ export default async function ProgramDetailPage({ params }: { params: Promise<{ 
   const byId = new Map(profiles.map((p) => [p.id, p]));
   const enrolledIds = new Set(enrollments.map((e) => e.trainee_id));
   const enrollmentIds = enrollments.map((e) => e.id);
-  const [{ data: watcherRows }, attachments] = await Promise.all([
+  const [{ data: watcherRows }, attachments, { count: reportCount }] = await Promise.all([
     enrollmentIds.length ? createAdminClient().from("enrollment_watchers").select("*").in("enrollment_id", enrollmentIds) : Promise.resolve({ data: [] as EnrollmentWatcher[] }),
     getAttachmentsForOwners("enrollment", enrollmentIds),
+    enrollmentIds.length
+      ? createAdminClient().from("reports").select("id", { count: "exact", head: true }).in("enrollment_id", enrollmentIds)
+      : Promise.resolve({ count: 0 }),
   ]);
   const watchers = (watcherRows ?? []) as EnrollmentWatcher[];
   const implicitStaff = active.filter((p) => p.is_people_ops || p.is_gm);
@@ -185,8 +188,21 @@ export default async function ProgramDetailPage({ params }: { params: Promise<{ 
           </CardContent>
         </Card>
       </div>
-      <div className="mt-6">
-        <Button variant="outline" nativeButton={false} render={<Link href="/admin/programs" />}>{tc("back")}</Button>
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-red-200 bg-red-50/40 px-5 py-4">
+        <div>
+          <div className="text-sm font-semibold text-destructive">{t("deleteProgram")}</div>
+          <p className="text-xs text-muted-foreground">{t("deleteProgramHint", { enrollments: enrollments.length, reports: reportCount ?? 0, files: attachments.length })}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" nativeButton={false} render={<Link href="/admin/programs" />}>{tc("back")}</Button>
+          <ActionForm
+            action={deleteProgram.bind(null, id)}
+            submitLabel={t("deleteProgram")}
+            variant="destructive"
+            confirmMessage={t("deleteProgramConfirm", { name: programLabel(program, locale), enrollments: enrollments.length, reports: reportCount ?? 0 })}
+            className="space-y-0"
+          />
+        </div>
       </div>
     </>
   );
