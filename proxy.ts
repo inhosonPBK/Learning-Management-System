@@ -31,6 +31,9 @@ export async function proxy(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   const { pathname } = request.nextUrl
 
+  // Server Actions are POSTs to the current route — never redirect them, only refresh the session.
+  if (request.method !== 'GET') return response
+
   if (!user) {
     if (PUBLIC_PATHS.has(pathname)) return response
     const login = new URL('/login', request.url)

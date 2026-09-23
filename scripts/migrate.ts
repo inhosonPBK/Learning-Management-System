@@ -20,7 +20,7 @@ if (!url) {
   process.exit(1)
 }
 
-const sql = postgres(url, { ssl: 'require', prepare: false, max: 1 })
+const sql = postgres(url, { ssl: 'require', prepare: false, max: 1, onnotice: () => {} })
 const dir = join(process.cwd(), 'supabase', 'migrations')
 const statusOnly = process.argv.includes('--status')
 
