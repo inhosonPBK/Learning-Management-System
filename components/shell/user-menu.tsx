@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -34,15 +35,17 @@ export function UserMenu({ user }: { user: ShellUser }) {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-64">
-        <DropdownMenuLabel className="px-2 py-2">
-          <div className="text-sm font-semibold text-foreground">{user.displayName}</div>
-          <div className="truncate text-xs text-muted-foreground">{user.email}</div>
-          {(user.jobTitle || user.teamName) && (
-            <div className="mt-1 text-xs text-muted-foreground">
-              {[user.jobTitle, user.teamName].filter(Boolean).join(" · ")}
-            </div>
-          )}
-        </DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="px-2 py-2">
+            <div className="text-sm font-semibold text-foreground">{user.displayName}</div>
+            <div className="truncate text-xs text-muted-foreground">{user.email}</div>
+            {(user.jobTitle || user.teamName) && (
+              <div className="mt-1 text-xs text-muted-foreground">
+                {[user.jobTitle, user.teamName].filter(Boolean).join(" · ")}
+              </div>
+            )}
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem render={<Link href="/change-password" />}>
           <KeyRound />
