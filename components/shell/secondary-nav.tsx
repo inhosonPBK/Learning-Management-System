@@ -15,6 +15,7 @@ export async function SecondaryNav({ user }: { user: ShellUser }) {
         <Button
           size="sm"
           className="bg-brand-yellow font-semibold text-brand-navy-deep hover:bg-brand-yellow-dark"
+          nativeButton={false}
           render={<Link href="/reports?new=1" />}
         >
           <Plus />

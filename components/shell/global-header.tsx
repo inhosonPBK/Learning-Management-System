@@ -23,7 +23,7 @@ export async function GlobalHeader({ user }: { user: ShellUser }) {
           <Button variant="ghost" size="icon" aria-label={t("notifications")} disabled title={t("notifications")}>
             <Bell />
           </Button>
-          <Button variant="ghost" size="icon" aria-label={t("help")} render={<a href="/manual-ko.html" target="_blank" rel="noreferrer" />}>
+          <Button variant="ghost" size="icon" aria-label={t("help")} nativeButton={false} render={<a href="/manual-ko.html" target="_blank" rel="noreferrer" />}>
             <CircleHelp />
           </Button>
           <LangToggle />

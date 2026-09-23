@@ -33,7 +33,7 @@ export function ChangePasswordForm({ forced }: { forced: boolean }) {
           {pending ? t("changing") : t("changePassword")}
         </Button>
         {!forced && (
-          <Button render={<Link href="/dashboard" />} variant="outline" size="lg">
+          <Button nativeButton={false} render={<Link href="/dashboard" />} variant="outline" size="lg">
             {tc("cancel")}
           </Button>
         )}

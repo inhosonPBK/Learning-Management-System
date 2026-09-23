@@ -25,6 +25,7 @@ export function MobileNav({ user }: { user: ShellUser }) {
         <div className="px-4">
           <Button
             className="w-full bg-brand-yellow font-semibold text-brand-navy-deep hover:bg-brand-yellow-dark"
+            nativeButton={false}
             render={<Link href="/reports?new=1" onClick={() => setOpen(false)} />}
           >
             <Plus />
