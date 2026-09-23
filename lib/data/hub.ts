@@ -31,9 +31,13 @@ export async function getHubData(viewer: Viewer, locale: Locale): Promise<HubDat
   ]);
 
   const every = dedupe([...mine, ...mentees, ...team, ...all]);
-  const reports = await getReportsForEnrollments(every.map((e) => e.id));
-  const profiles = await getProfilesMap(every.flatMap((e) => [e.trainee_id, e.mentor_id ?? ""]));
-  const teams = new Map((await getTeams()).map((t) => [t.code, t]));
+  // Second stage: three independent lookups in parallel (one network round trip instead of three).
+  const [reports, profiles, teamRows] = await Promise.all([
+    getReportsForEnrollments(every.map((e) => e.id)),
+    getProfilesMap(every.flatMap((e) => [e.trainee_id, e.mentor_id ?? ""])),
+    getTeams(),
+  ]);
+  const teams = new Map(teamRows.map((t) => [t.code, t]));
 
   const toCard = (e: EnrollmentWithProgram): EnrollmentCardData => {
     const trainee = profiles.get(e.trainee_id);

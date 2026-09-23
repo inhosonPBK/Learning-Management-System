@@ -40,15 +40,8 @@ export async function getEnrollment(id: string): Promise<EnrollmentWithProgram |
 export async function getEnrollmentsByIds(ids: string[]): Promise<EnrollmentWithProgram[]> {
   const unique = [...new Set(ids)];
   if (!unique.length) return [];
-  const admin = createAdminClient();
-  const { data: es } = await admin.from("enrollments").select("*").in("id", unique);
-  const enrollments = (es ?? []) as Enrollment[];
-  const programIds = [...new Set(enrollments.map((e) => e.program_id))];
-  const { data: ps } = await admin.from("programs").select("*").in("id", programIds);
-  const programs = new Map(((ps ?? []) as Program[]).map((p) => [p.id, p]));
-  return enrollments
-    .filter((e) => programs.has(e.program_id))
-    .map((e) => ({ ...e, program: programs.get(e.program_id)! }));
+  const { data: es } = await createAdminClient().from("enrollments").select("*").in("id", unique);
+  return attachPrograms((es ?? []) as Enrollment[]);
 }
 
 export async function getEnrollmentsForProgram(programId: string): Promise<Enrollment[]> {
@@ -58,8 +51,17 @@ export async function getEnrollmentsForProgram(programId: string): Promise<Enrol
 
 export async function getEnrollmentsForTrainees(traineeIds: string[]): Promise<EnrollmentWithProgram[]> {
   if (!traineeIds.length) return [];
-  const { data } = await createAdminClient().from("enrollments").select("id").in("trainee_id", traineeIds);
-  return getEnrollmentsByIds((data ?? []).map((r) => r.id));
+  const { data } = await createAdminClient().from("enrollments").select("*").in("trainee_id", traineeIds);
+  return attachPrograms((data ?? []) as Enrollment[]);
+}
+
+/** Joins programs onto enrollment rows with a single extra query. */
+async function attachPrograms(enrollments: Enrollment[]): Promise<EnrollmentWithProgram[]> {
+  if (!enrollments.length) return [];
+  const programIds = [...new Set(enrollments.map((e) => e.program_id))];
+  const { data: ps } = await createAdminClient().from("programs").select("*").in("id", programIds);
+  const programs = new Map(((ps ?? []) as Program[]).map((p) => [p.id, p]));
+  return enrollments.filter((e) => programs.has(e.program_id)).map((e) => ({ ...e, program: programs.get(e.program_id)! }));
 }
 
 export function programLabel(p: Program, locale: "ko" | "en") {

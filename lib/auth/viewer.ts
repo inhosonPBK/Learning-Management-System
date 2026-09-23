@@ -1,9 +1,23 @@
 import 'server-only'
 import { cache } from 'react'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { AUTH_USER_HEADER } from '@/lib/auth/constants'
 import type { Profile } from '@/types/db'
+
+/**
+ * Verified auth user id for this request. proxy.ts already called auth.getUser() and forwarded the id
+ * (it always overwrites the header, so it cannot be spoofed). Falls back to a live check when absent.
+ */
+async function getAuthUserId(): Promise<string | null> {
+  const fromProxy = (await headers()).get(AUTH_USER_HEADER)
+  if (fromProxy) return fromProxy
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  return user?.id ?? null
+}
 
 /** Everything permission checks need about the current user, computed once per request. */
 export interface Viewer {
@@ -28,15 +42,14 @@ export interface Viewer {
 }
 
 export const getViewer = cache(async (): Promise<Viewer | null> => {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  const authUserId = await getAuthUserId()
+  if (!authUserId) return null
 
   const admin = createAdminClient()
   const { data: profile } = await admin
     .from('profiles')
     .select('*')
-    .eq('auth_user_id', user.id)
+    .eq('auth_user_id', authUserId)
     .maybeSingle<Profile>()
   if (!profile) return null
 
@@ -52,7 +65,7 @@ export const getViewer = cache(async (): Promise<Viewer | null> => {
   return {
     profile,
     id: profile.id,
-    authUserId: user.id,
+    authUserId,
     isAdmin: profile.is_admin,
     isPeopleOps: profile.is_people_ops,
     isGm: profile.is_gm,
