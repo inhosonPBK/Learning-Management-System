@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { requireViewer } from "@/lib/auth/viewer";
-import { canCreateReport, canEditReport, canReviewReport, canViewReport } from "@/lib/auth/permissions";
+import { canCreateReport, canReviewReport, canViewReport } from "@/lib/auth/permissions";
 import { loadEnrollmentForViewer } from "@/lib/data/enrollment-view";
 import { getReportType, programLabel } from "@/lib/data/programs";
 import { getWeeklyReport } from "@/lib/data/reports";
@@ -28,7 +28,9 @@ export default async function WeeklyEditorPage({ params }: { params: Promise<{ e
   if (report && !(await canViewReport(viewer, { report, enrollment, type }))) notFound();
 
   const isTrainee = viewer.id === enrollment.trainee_id;
-  const canEdit = report ? canEditReport(viewer, report) : await canCreateReport(viewer, enrollment, enrollment.program, type);
+  // "canEdit" = the viewer is the author who may act on this report (edit while draft, recall while submitted).
+  // Draft-state gating happens inside WeeklyForm; the actions re-check canEditReport/canRecallReport server-side.
+  const canEdit = report ? viewer.id === report.author_id && viewer.isActive : await canCreateReport(viewer, enrollment, enrollment.program, type);
   const canReview = report ? canReviewReport(viewer, { report, enrollment, type }) : false;
   const reviewer = report?.reviewer_id ? await getProfileById(report.reviewer_id) : null;
   const { start } = enrollmentDates(enrollment.program, enrollment);
