@@ -65,6 +65,7 @@
   <a href="#mentor"><span>04</span>멘토</a>
   <a href="#manager"><span>05</span>매니저 · People Ops · GM</a>
   <a href="#admin"><span>06</span>관리자</a>
+  <a href="#materials"><span>06-2</span>교육자료 게시판</a>
   <a href="#faq"><span>07</span>자주 묻는 질문</a>
 </nav>
 
@@ -95,7 +96,7 @@
       <tr><th style="width:130px">메뉴</th><th>내용</th></tr>
       <tr><td><strong>대시보드</strong></td><td>처리 필요(리뷰 대기·미제출 초안), 내 교육, 내 멘티, 내 팀, 전사 현황(권한자), 최근 활동</td></tr>
       <tr><td><strong>보고서</strong></td><td>내가 볼 수 있는 모든 교육 등록(enrollment) 카드. 주차 진행 스트립, 주간보고서·면담보고서 바로가기, 면담일지 출력</td></tr>
-      <tr><td><strong>교육자료</strong></td><td>카테고리별 교육 자료 게시판 <em>(2단계 오픈 예정)</em></td></tr>
+      <tr><td><strong>교육자료</strong></td><td>카테고리별 교육 자료 게시판 — 전사 교육 자료, 직군별 JD, 양식 파일 공유·다운로드</td></tr>
       <tr><td><strong>조직도</strong></td><td>10개 팀별 구성원, 팀 리드, 직속 매니저, 이메일. 검색·팀 필터</td></tr>
       <tr><td><strong>관리</strong></td><td>Admin · People Operations만 표시. 프로그램, 등록, 팀, 사용자, 감사 로그</td></tr>
     </table>
@@ -191,9 +192,29 @@
       <div class="card"><strong>비활성화 / 재활성화</strong>퇴사자는 비활성화 — 로그인 차단, 멘토 배정 해제, 프로필·보고서는 보존. 복귀 시 재활성화.</div>
       <div class="card"><strong>권한 플래그</strong>Admin · People Operations · GM. 매니저·멘토 권한은 조직도와 등록에서 자동 파생됩니다.</div>
     </div>
+    <h3>교육훈련계획서 · JD 파일 첨부</h3>
+    <p>각 등록 카드의 <strong>문서</strong> 영역에서 종류(교육훈련계획서 / 직무기술서 / 기타)를 고르고 <span class="ui">파일 업로드</span>를 누르면 PDF·Word·Excel·PowerPoint·이미지를 파일당 최대 50MB까지 올릴 수 있습니다. 파일은 브라우저에서 저장소로 직접 전송되며, 해당 피교육자를 열람할 수 있는 사람만 다운로드할 수 있습니다. 멘토도 자기 멘티의 문서를 올릴 수 있어요. 텍스트 입력란(직무 요약 · 교육계획 요약)은 그리드에 표시되는 짧은 요약용입니다.</p>
+    <h3>열람자 자동 설정</h3>
+    <p>등록 카드의 <strong>열람자</strong>에는 멘토(노란 칩), 권한 규칙으로 자동 열람하는 사람(점선 칩 — 피교육자의 직속 매니저 · People Operations · GM)이 표시됩니다. 멘토를 지정하면 <strong>멘토의 매니저</strong>가 열람자로 자동 추가되고, 그 외 필요한 사람은 직접 추가합니다.</p>
     <h3>팀 · 감사 로그</h3>
     <p><strong>팀</strong>: 10개 팀의 한글/영문명과 팀 리드를 수정합니다. 한글명은 정부양식 근무부서에 그대로 인쇄됩니다. <strong>감사 로그</strong>(Admin): 로그인, 제출, 리뷰 완료, 사용자·등록 변경 등 최근 200건.</p>
     <div class="callout ok">데이터는 매주 월요일 0시(KST) GitHub Actions로 자동 CSV 백업되며 90일간 보관됩니다.</div>
+  </div>
+</div>
+
+<!-- 06b -->
+<div class="section" id="materials">
+  <div class="section-header c-teal"><div><h2>06-2 · 교육자료 게시판</h2><p>전사 교육 자료 · 직군별 JD · 양식 파일 공유</p></div><span class="badge">모든 사용자 열람</span></div>
+  <div class="section-body">
+    <h3>열람 · 다운로드</h3>
+    <p>상단 <strong>교육자료</strong> 메뉴에서 카테고리 타일(온보딩 · 규정·정책 · 제품 교육 · 품질·안전 · 시스템·도구 · 일반)을 누르거나 제목·내용을 검색합니다. 자료를 열면 설명과 첨부 파일이 보이고, 파일명을 클릭하면 다운로드됩니다 (링크는 1분간 유효, 열람 권한 자동 확인).</p>
+    <h3>자료 등록 (Admin · People Ops · 팀 리드 · 멘토)</h3>
+    <ol class="steps">
+      <li><span class="ui btn-b">자료 등록</span> → 제목, 카테고리, 설명, 대상 프로그램(선택), 공개 여부를 저장합니다.</li>
+      <li>상세 화면의 <strong>첨부 파일</strong>에서 <span class="ui">파일 업로드</span>로 파일을 올립니다 (파일당 50MB).</li>
+      <li>비공개로 저장하면 작성자와 관리자만 볼 수 있어 초안 작업에 유용합니다. 수정·삭제는 작성자와 Admin·People Ops만 가능합니다.</li>
+    </ol>
+    <div class="callout">직군별 JD 템플릿, 인턴 교육훈련계획서 양식, QMS 교육 자료처럼 <em>반복 사용하는 문서</em>는 게시판에, <em>특정 피교육자의 실제 계획서·JD</em>는 해당 등록 카드의 문서 영역에 올리는 것을 권장합니다.</div>
   </div>
 </div>
 

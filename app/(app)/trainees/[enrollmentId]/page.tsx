@@ -7,6 +7,9 @@ import { loadEnrollmentForViewer } from "@/lib/data/enrollment-view";
 import { getReportsForEnrollment, summarize } from "@/lib/data/reports";
 import { programLabel } from "@/lib/data/programs";
 import { getProfileById, teamLabel } from "@/lib/data/org";
+import { getAttachments } from "@/lib/files/data";
+import { FileUploader } from "@/components/files/file-uploader";
+import { AttachmentList } from "@/components/files/attachment-list";
 import { currentWeek, enrollmentDates, formatDate, totalWeeks, weekRangeLabel } from "@/lib/weeks";
 import { Container, PageHeader, SectionHeading } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
@@ -24,7 +27,17 @@ export default async function TraineeOverviewPage({ params }: { params: Promise<
   const tc = await getTranslations("common");
   const tp = await getTranslations("programs");
 
-  const [reports, manager] = await Promise.all([getReportsForEnrollment(enrollment.id), trainee.manager_id ? getProfileById(trainee.manager_id) : null]);
+  const [reports, manager, documents] = await Promise.all([
+    getReportsForEnrollment(enrollment.id),
+    trainee.manager_id ? getProfileById(trainee.manager_id) : null,
+    getAttachments("enrollment", enrollment.id),
+  ]);
+  const canManageDocs = canManageEnrollments(viewer) || enrollment.mentor_id === viewer.id || viewer.coMentorOfEnrollmentIds.includes(enrollment.id);
+  const docKinds = [
+    { value: "training_plan", label: tp("docTrainingPlan") },
+    { value: "jd", label: tp("docJd") },
+    { value: "other", label: tp("docOther") },
+  ];
   const stats = summarize(reports);
   const total = totalWeeks(enrollment.program, enrollment);
   const cur = currentWeek(enrollment.program, enrollment);
@@ -64,9 +77,22 @@ export default async function TraineeOverviewPage({ params }: { params: Promise<
 
         <Card className="lg:col-span-2">
           <CardContent className="pt-6">
+            <SectionHeading
+              title={tp("documents")}
+              description={tp("documentsHint")}
+              actions={canManageDocs ? <FileUploader ownerType="enrollment" ownerId={enrollment.id} kinds={docKinds} compact accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.txt,.md" /> : undefined}
+            />
+            <AttachmentList
+              attachments={documents}
+              canManage={canManageDocs}
+              locale={locale}
+              kindLabels={Object.fromEntries(docKinds.map((k) => [k.value, k.label]))}
+              emptyText={tp("noDocuments")}
+              className="mb-6"
+            />
             <SectionHeading title={tp("jd")} />
             <p className="whitespace-pre-wrap text-sm text-foreground/90">{enrollment.jd_text || <span className="text-muted-foreground">—</span>}</p>
-            <SectionHeading title={tp("plan")} />
+            <SectionHeading title={tp("planSummary")} />
             {enrollment.training_plan.length ? (
               <ol className="space-y-1.5 text-sm">
                 {enrollment.training_plan.map((p, i) => (

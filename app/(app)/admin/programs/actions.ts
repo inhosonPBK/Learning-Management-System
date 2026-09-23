@@ -92,18 +92,36 @@ export async function enrollTrainee(programId: string, _p: ActionState, fd: Form
     .select("id")
     .single();
   if (error) return { error: error.code === "23505" ? "This person is already enrolled in this program." : error.message };
+  await addDefaultWatchers(data.id, trainee_id, mentor_id);
   await logAudit(viewer.id, "enrollment.create", "enrollment", data.id, { program_id: programId, trainee_id, mentor_id });
   revalidatePath(`/admin/programs/${programId}`);
   return { ok: true };
 }
 
+/**
+ * Default viewers: the mentor's own manager is added as an observer so the mentor's line
+ * sees the trainee's progress. (Trainee's direct manager, People Ops and GM already have
+ * access through the permission rules and are shown as implicit viewers in the UI.)
+ */
+async function addDefaultWatchers(enrollmentId: string, traineeId: string, mentorId: string | null) {
+  if (!mentorId) return;
+  const admin = createAdminClient();
+  const { data: mentor } = await admin.from("profiles").select("manager_id").eq("id", mentorId).maybeSingle<{ manager_id: string | null }>();
+  const mgr = mentor?.manager_id;
+  if (!mgr || mgr === traineeId || mgr === mentorId) return;
+  const { data: mgrProfile } = await admin.from("profiles").select("is_gm, is_people_ops, is_active").eq("id", mgr).maybeSingle<{ is_gm: boolean; is_people_ops: boolean; is_active: boolean }>();
+  if (!mgrProfile?.is_active || mgrProfile.is_gm || mgrProfile.is_people_ops) return; // already sees everything
+  await admin.from("enrollment_watchers").upsert({ enrollment_id: enrollmentId, profile_id: mgr, role: "observer" }, { onConflict: "enrollment_id,profile_id", ignoreDuplicates: true });
+}
+
 export async function updateEnrollment(enrollmentId: string, _p: ActionState, fd: FormData): Promise<ActionState> {
   const viewer = await requireStaff();
   const admin = createAdminClient();
-  const { data: e } = await admin.from("enrollments").select("program_id, trainee_id").eq("id", enrollmentId).maybeSingle();
+  const { data: e } = await admin.from("enrollments").select("program_id, trainee_id, mentor_id").eq("id", enrollmentId).maybeSingle();
   if (!e) return { error: "Not found" };
   const mentor_id = str(fd, "mentor_id") || null;
   if (mentor_id === e.trainee_id) return { error: "Mentor and trainee must differ." };
+  if (mentor_id && mentor_id !== e.mentor_id) await addDefaultWatchers(enrollmentId, e.trainee_id, mentor_id);
   const status = str(fd, "status") as "active" | "completed" | "withdrawn";
 
   const { error } = await admin

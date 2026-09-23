@@ -116,3 +116,8 @@ export function canManageMaterials(v: Viewer, material?: { author_id: string | n
   if (v.isAdmin || v.isPeopleOps) return true
   return !!material && material.author_id === v.id
 }
+
+/** Who may post to the materials board: staff, team leads (have direct reports) and mentors. */
+export function canCreateMaterial(v: Viewer) {
+  return v.isActive && (v.isAdmin || v.isPeopleOps || v.directReportIds.length > 0 || v.mentorOfEnrollmentIds.length > 0)
+}
