@@ -284,11 +284,20 @@
   },
   "people": {
     "title": "조직도",
-    "subtitle": "활성 구성원 {count}명 · 팀별 보기",
+    "subtitle": "활성 구성원 {count}명 · GM → 법인 → 팀 → 구성원",
     "searchPlaceholder": "이름, 직책, 이메일 검색",
     "clear": "초기화",
     "lead": "팀 리드",
-    "you": "나"
+    "you": "나",
+    "expandAll": "전체 펼치기",
+    "collapseAll": "전체 접기",
+    "members": "구성원",
+    "reports": "직속 {n}명",
+    "entity": {
+      "PBK": "Promega Biosystems Korea",
+      "PK": "Promega Korea",
+      "SHARED": "공통 (Shared Services)"
+    }
   },
   "materials": {
     "title": "교육자료",

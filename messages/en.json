@@ -284,11 +284,20 @@
   },
   "people": {
     "title": "People",
-    "subtitle": "{count} active members · by team",
+    "subtitle": "{count} active members · GM → entity → team → members",
     "searchPlaceholder": "Search name, title, email",
     "clear": "Clear",
     "lead": "Lead",
-    "you": "You"
+    "you": "You",
+    "expandAll": "Expand all",
+    "collapseAll": "Collapse all",
+    "members": "Members",
+    "reports": "{n} reports",
+    "entity": {
+      "PBK": "Promega Biosystems Korea",
+      "PK": "Promega Korea",
+      "SHARED": "Shared Services"
+    }
   },
   "materials": {
     "title": "Training materials",

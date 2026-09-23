@@ -1,40 +1,80 @@
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
-import { Mail } from "lucide-react";
 import { requireViewer } from "@/lib/auth/viewer";
 import { getAllProfiles, getTeams, teamLabel } from "@/lib/data/org";
 import { Container, PageHeader } from "@/components/page-header";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { OrgChart, type EntityNode, type PersonNode, type TeamNode } from "@/components/people/org-chart";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { initialsOf } from "@/components/shell/nav-config";
-import { cn } from "@/lib/utils";
-import type { Locale, Profile } from "@/types/db";
+import type { Locale, Profile, Team } from "@/types/db";
 
-const TILE = ["bg-tile-blue", "bg-tile-green", "bg-tile-orange", "bg-tile-amber", "bg-brand-navy", "bg-brand-blue-dark"];
+const ENTITY_ORDER: EntityNode["code"][] = ["PBK", "PK", "SHARED"];
 
 export default async function PeoplePage({ searchParams }: { searchParams: Promise<{ q?: string; team?: string }> }) {
   const viewer = await requireViewer();
-  const { q = "", team = "" } = await searchParams;
+  const { q = "", team: teamFilter = "" } = await searchParams;
   const locale = (await getLocale()) as Locale;
   const t = await getTranslations("people");
   const tc = await getTranslations("common");
   const [profiles, teams] = await Promise.all([getAllProfiles(), getTeams()]);
-  const byId = new Map(profiles.map((p) => [p.id, p]));
+
   const needle = q.trim().toLowerCase();
-
   const matches = (p: Profile) => !needle || [p.display_name, p.name_ko ?? "", p.email, p.job_title ?? ""].some((s) => s.toLowerCase().includes(needle));
+  const filtering = !!needle || !!teamFilter;
 
-  const groups = teams
-    .filter((tm) => tm.is_active && (!team || tm.code === team))
-    .map((tm) => ({
-      team: tm,
-      members: profiles
-        .filter((p) => p.team_code === tm.code && matches(p))
-        .sort((a, b) => Number(b.id === tm.lead_id) - Number(a.id === tm.lead_id) || Number(b.is_active) - Number(a.is_active) || a.display_name.localeCompare(b.display_name)),
-    }))
-    .filter((g) => g.members.length);
+  const toNode = (p: Profile, children: PersonNode[] = []): PersonNode => ({
+    id: p.id,
+    name: p.display_name,
+    nameKo: p.name_ko,
+    title: p.job_title,
+    email: p.email,
+    isActive: p.is_active,
+    isIntern: p.employee_type === "Intern",
+    isYou: p.id === viewer.id,
+    children,
+  });
+
+  // Subtree under `managerId` restricted to one team; pruned to matches when filtering.
+  const byManager = new Map<string, Profile[]>();
+  for (const p of profiles) if (p.manager_id) (byManager.get(p.manager_id) ?? byManager.set(p.manager_id, []).get(p.manager_id)!).push(p);
+  const subtree = (managerId: string, teamCode: string): PersonNode[] =>
+    (byManager.get(managerId) ?? [])
+      .filter((p) => p.team_code === teamCode)
+      .sort((a, b) => Number(b.is_active) - Number(a.is_active) || a.display_name.localeCompare(b.display_name))
+      .map((p) => {
+        const children = subtree(p.id, teamCode);
+        // when searching, keep a person if they match or any descendant matched
+        return !needle || matches(p) || children.length ? toNode(p, children) : null;
+      })
+      .filter((n): n is PersonNode => !!n);
+
+  const gmProfile = profiles.find((p) => p.is_gm) ?? profiles.find((p) => !p.manager_id && p.is_active) ?? null;
+
+  const buildTeam = (tm: Team): TeamNode | null => {
+    if (teamFilter && tm.code !== teamFilter) return null;
+    const lead = tm.lead_id ? profiles.find((p) => p.id === tm.lead_id) ?? null : null;
+    const tree = lead ? subtree(lead.id, tm.code) : [];
+    const count = profiles.filter((p) => p.team_code === tm.code && p.is_active).length;
+    if (needle && !tree.length && !(lead && matches(lead))) return null;
+    return {
+      code: tm.code,
+      name: teamLabel(tm, locale) ?? tm.name_en,
+      altName: (locale === "ko" ? tm.name_en : tm.name_ko) ?? "",
+      lead: lead ? toNode(lead) : null,
+      count,
+      tree,
+    };
+  };
+
+  const entities: EntityNode[] = ENTITY_ORDER.map((code) => ({
+    code,
+    label: code,
+    description: t(`entity.${code}`),
+    count: profiles.filter((p) => p.entity === code && p.is_active && !p.is_gm).length,
+    teams: teams.filter((tm) => tm.is_active && tm.code !== "gm" && tm.entity === code).map(buildTeam).filter((x): x is TeamNode => !!x),
+  })).filter((e) => !filtering || e.teams.length);
+
+  const showGm = !!gmProfile && !filtering;
 
   return (
     <Container size="xl">
@@ -42,56 +82,33 @@ export default async function PeoplePage({ searchParams }: { searchParams: Promi
 
       <form className="mb-6 flex flex-wrap items-center gap-2">
         <Input name="q" defaultValue={q} placeholder={t("searchPlaceholder")} className="max-w-xs" />
-        <select name="team" defaultValue={team} className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm">
+        <select name="team" defaultValue={teamFilter} className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm">
           <option value="">{tc("all")}</option>
-          {teams.map((tm) => <option key={tm.code} value={tm.code}>{teamLabel(tm, locale)}</option>)}
+          {teams.filter((tm) => tm.code !== "gm").map((tm) => <option key={tm.code} value={tm.code}>{teamLabel(tm, locale)}</option>)}
         </select>
         <Button type="submit" variant="outline" size="sm">{tc("search")}</Button>
-        {(q || team) && <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/people" />}>{t("clear")}</Button>}
+        {filtering && <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/people" />}>{t("clear")}</Button>}
       </form>
 
-      {!groups.length && <p className="text-sm text-muted-foreground">{tc("none")}</p>}
-
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {groups.map((g, i) => (
-          <section key={g.team.code} className="overflow-hidden rounded-xl border bg-white">
-            <div className={cn("flex items-center justify-between px-5 py-3 text-white", TILE[i % TILE.length])}>
-              <div>
-                <div className="text-base font-semibold">{teamLabel(g.team, locale)}</div>
-                <div className="text-xs text-white/75">{locale === "ko" ? g.team.name_en : g.team.name_ko ?? ""}{g.team.entity ? ` · ${g.team.entity}` : ""}</div>
-              </div>
-              <span className="text-sm font-bold">{g.members.filter((m) => m.is_active).length}</span>
-            </div>
-            <ul className="divide-y">
-              {g.members.map((p) => {
-                const isLead = p.id === g.team.lead_id;
-                const manager = p.manager_id ? byId.get(p.manager_id) : null;
-                return (
-                  <li key={p.id} className={cn("flex items-center gap-3 px-4 py-2.5", !p.is_active && "opacity-50")}>
-                    <Avatar className="size-8">
-                      <AvatarFallback className={cn("text-[10px] font-bold", isLead ? "bg-brand-yellow text-brand-navy-deep" : "bg-brand-navy text-white")}>{initialsOf(p.display_name)}</AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2 text-sm">
-                        <span className="truncate font-medium">{p.display_name}</span>
-                        {p.name_ko && <span className="text-xs text-muted-foreground">{p.name_ko}</span>}
-                        {isLead && <Badge className="bg-brand-yellow text-[10px] text-brand-navy-deep">{t("lead")}</Badge>}
-                        {p.employee_type === "Intern" && <Badge variant="outline" className="text-[10px] text-tile-green">Intern</Badge>}
-                        {!p.is_active && <Badge variant="outline" className="text-[10px]">{tc("inactive")}</Badge>}
-                        {p.id === viewer.id && <Badge variant="outline" className="text-[10px] text-brand-blue">{t("you")}</Badge>}
-                      </div>
-                      <div className="truncate text-xs text-muted-foreground">
-                        {p.job_title}{manager && !isLead ? ` · ${tc("manager")}: ${manager.display_name}` : ""}
-                      </div>
-                    </div>
-                    <a href={`mailto:${p.email}`} className="text-muted-foreground hover:text-brand-blue" aria-label={p.email} title={p.email}><Mail className="size-4" /></a>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        ))}
-      </div>
+      {!entities.length ? (
+        <p className="text-sm text-muted-foreground">{tc("none")}</p>
+      ) : (
+        <OrgChart
+          key={`${q}|${teamFilter}`}
+          gm={showGm && gmProfile ? toNode(gmProfile) : null}
+          entities={entities}
+          defaultExpanded={filtering}
+          labels={{
+            lead: t("lead"),
+            you: t("you"),
+            inactive: tc("inactive"),
+            expandAll: t("expandAll"),
+            collapseAll: t("collapseAll"),
+            members: t("members"),
+            reports: t.raw("reports"), // template with {n}; interpolated client-side per node
+          }}
+        />
+      )}
     </Container>
   );
 }
