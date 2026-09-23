@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training Hub 사용자 매뉴얼 — Promega Korea</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; background: #F5F7FA; color: #1a1f2b; line-height: 1.65; }
+  a { color: #0071BC; }
+  .cover { background: linear-gradient(135deg, #0F1A2E 0%, #1B2A47 60%, #005A96 100%); color: #fff; padding: 64px 40px 52px; text-align: center; }
+  .cover-logo { display: inline-block; background: #F5C400; color: #0F1A2E; font-weight: 800; padding: 8px 18px; border-radius: 8px; letter-spacing: -.3px; margin-bottom: 18px; }
+  .cover h1 { font-size: 30px; font-weight: 800; margin-bottom: 8px; }
+  .cover p { color: #cce3f5; font-size: 14px; max-width: 560px; margin: 0 auto; }
+  .cover-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #9DC3E6; margin-top: 18px; }
+  .toc { max-width: 900px; margin: 28px auto 0; padding: 0 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .toc a { display: block; background: #fff; border: 1px solid #E3E8EF; border-radius: 10px; padding: 12px 14px; text-decoration: none; color: #1B2A47; font-weight: 600; font-size: 13px; }
+  .toc a span { display: block; color: #0071BC; font-size: 11px; font-weight: 700; margin-bottom: 2px; }
+  .section { max-width: 900px; margin: 28px auto 0; padding: 0 24px; }
+  .section-header { border-radius: 12px 12px 0 0; padding: 18px 28px; color: #fff; display: flex; align-items: center; gap: 12px; }
+  .section-header h2 { font-size: 18px; font-weight: 800; }
+  .section-header p { font-size: 12px; opacity: .8; margin-top: 2px; }
+  .badge { background: rgba(255,255,255,.18); font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-left: auto; white-space: nowrap; }
+  .c-navy { background: #1B2A47; } .c-blue { background: #0071BC; } .c-green { background: #4E8B2E; } .c-orange { background: #D9541E; } .c-amber { background: #E8A317; } .c-teal { background: #0B7FAB; } .c-gray { background: #374151; }
+  .section-body { background: #fff; border-radius: 0 0 12px 12px; box-shadow: 0 2px 14px rgba(0,0,0,.06); padding: 26px 28px; }
+  h3 { font-size: 14px; font-weight: 700; color: #1B2A47; margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 2px solid #E3E8EF; }
+  h3:first-child { margin-top: 0; }
+  p, li { font-size: 13.5px; }
+  ol, ul { padding-left: 22px; margin: 6px 0 10px; }
+  li { margin-bottom: 4px; }
+  .steps li { margin-bottom: 8px; }
+  .callout { border-left: 3px solid #0071BC; background: #EEF3F9; padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 13px; margin: 12px 0; }
+  .callout.warn { border-color: #D9541E; background: #FFF3EE; }
+  .callout.ok { border-color: #4E8B2E; background: #E2EFDA; }
+  .callout.gold { border-color: #C9A227; background: #FFF8E1; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0 14px; }
+  th { background: #1B2A47; color: #fff; text-align: left; padding: 9px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+  td { padding: 9px 12px; border-bottom: 1px solid #E3E8EF; vertical-align: top; }
+  tr:nth-child(even) td { background: #F9FAFB; }
+  code, kbd { font-family: ui-monospace, Consolas, monospace; font-size: 12px; background: #F0F4F8; padding: 1px 6px; border-radius: 4px; color: #1B2A47; }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; border: 1px solid; }
+  .p-draft { color: #C55A11; border-color: #FDBA74; background: #FFF7ED; } .p-sub { color: #0071BC; border-color: #BFDBFE; background: #EFF6FF; } .p-done { color: #375623; border-color: #A9D18E; background: #E2EFDA; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; margin: 10px 0; }
+  .card { background: #F5F7FA; border: 1px solid #E3E8EF; border-radius: 10px; padding: 12px 14px; font-size: 12.5px; }
+  .card strong { display: block; color: #1B2A47; font-size: 12px; margin-bottom: 4px; }
+  .ui { display: inline-block; border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; padding: 1px 8px; font-size: 12px; font-weight: 600; color: #1B2A47; }
+  .btn-y { background: #F5C400; color: #0F1A2E; border-color: #F5C400; } .btn-b { background: #0071BC; color: #fff; border-color: #0071BC; }
+  footer { max-width: 900px; margin: 34px auto 48px; text-align: center; font-size: 12px; color: #94a3b8; }
+  @media print { body { background: #fff; } .section-body { box-shadow: none; border: 1px solid #E3E8EF; } .toc { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-logo">Promega</div>
+  <h1>Training Hub 사용자 매뉴얼</h1>
+  <p>인턴 · 신입 · 경력 OJT를 위한 사내 통합 교육훈련 플랫폼. 주간 교육 보고서, 면담보고서, 교육계획을 한곳에서 관리합니다.</p>
+  <div class="cover-sub">Promega Korea · Promega Biosystems Korea · v2.0 · 2026.09</div>
+</div>
+
+<nav class="toc">
+  <a href="#start"><span>01</span>시작하기 · 로그인</a>
+  <a href="#nav"><span>02</span>화면 구성</a>
+  <a href="#trainee"><span>03</span>피교육자 (인턴·신입·OJT)</a>
+  <a href="#mentor"><span>04</span>멘토</a>
+  <a href="#manager"><span>05</span>매니저 · People Ops · GM</a>
+  <a href="#admin"><span>06</span>관리자</a>
+  <a href="#faq"><span>07</span>자주 묻는 질문</a>
+</nav>
+
+<!-- 01 -->
+<div class="section" id="start">
+  <div class="section-header c-navy"><div><h2>01 · 시작하기</h2><p>계정은 사전에 등록되어 있습니다 — 별도 가입 없이 로그인하세요</p></div><span class="badge">모든 사용자</span></div>
+  <div class="section-body">
+    <h3>첫 로그인</h3>
+    <ol class="steps">
+      <li>People Operations로부터 <strong>임시 비밀번호</strong>를 Teams DM으로 받습니다.</li>
+      <li>사이트에 접속해 <strong>회사 이메일</strong>과 임시 비밀번호로 로그인합니다.</li>
+      <li>바로 <strong>비밀번호 변경</strong> 화면이 열립니다. 새 비밀번호(10자 이상, 영문+숫자)를 두 번 입력하고 <span class="ui btn-b">비밀번호 변경</span>을 누르세요.</li>
+      <li>대시보드로 이동하면 준비 완료입니다.</li>
+    </ol>
+    <div class="callout warn">비밀번호를 잊으셨나요? 셀프 재설정 메일은 발송되지 않습니다. <strong>People Operations 또는 관리자에게 임시 비밀번호 재발급</strong>을 요청하세요. 재발급 후 첫 로그인 시 다시 변경하게 됩니다.</div>
+    <h3>언어 전환</h3>
+    <p>상단 우측 <span class="ui">🌐 KO</span> 버튼으로 한국어/English를 전환할 수 있습니다. 선택은 계정에 저장됩니다. 정부 제출용 면담일지 출력물은 항상 한글로 표시됩니다.</p>
+    <h3>비밀번호 변경 · 로그아웃</h3>
+    <p>우측 상단 <strong>이니셜 아바타</strong>를 누르면 비밀번호 변경, 관리(권한자만), 로그아웃 메뉴가 열립니다.</p>
+  </div>
+</div>
+
+<!-- 02 -->
+<div class="section" id="nav">
+  <div class="section-header c-blue"><div><h2>02 · 화면 구성</h2><p>역할별로 다른 화면 대신, 한 대시보드에 나에게 해당하는 섹션만 표시됩니다</p></div></div>
+  <div class="section-body">
+    <table>
+      <tr><th style="width:130px">메뉴</th><th>내용</th></tr>
+      <tr><td><strong>대시보드</strong></td><td>처리 필요(리뷰 대기·미제출 초안), 내 교육, 내 멘티, 내 팀, 전사 현황(권한자), 최근 활동</td></tr>
+      <tr><td><strong>보고서</strong></td><td>내가 볼 수 있는 모든 교육 등록(enrollment) 카드. 주차 진행 스트립, 주간보고서·면담보고서 바로가기, 면담일지 출력</td></tr>
+      <tr><td><strong>교육자료</strong></td><td>카테고리별 교육 자료 게시판 <em>(2단계 오픈 예정)</em></td></tr>
+      <tr><td><strong>조직도</strong></td><td>10개 팀별 구성원, 팀 리드, 직속 매니저, 이메일. 검색·팀 필터</td></tr>
+      <tr><td><strong>관리</strong></td><td>Admin · People Operations만 표시. 프로그램, 등록, 팀, 사용자, 감사 로그</td></tr>
+    </table>
+    <div class="callout">우측 상단 <span class="ui btn-y">+ 새 보고서</span> 버튼은 보고서 허브로 이동합니다. 내 교육 카드에서 <strong>주간보고서</strong>를, 멘티 카드에서 <strong>면담보고서</strong>를 선택하세요.</div>
+    <h3>보고서 상태</h3>
+    <p><span class="pill p-draft">작성 중</span> 자동 저장되는 초안 — 작성자만 볼 수 있음 &nbsp;→&nbsp; <span class="pill p-sub">제출됨</span> 멘토·매니저·People Ops·GM 열람 가능, 작성자는 회수 가능 &nbsp;→&nbsp; <span class="pill p-done">완료</span> 멘토 리뷰 완료, 잠김 (주간보고서)</p>
+  </div>
+</div>
+
+<!-- 03 -->
+<div class="section" id="trainee">
+  <div class="section-header c-green"><div><h2>03 · 피교육자</h2><p>인턴 · 신입 · 경력 OJT — 주간 교육 보고서 작성</p></div><span class="badge">Trainee</span></div>
+  <div class="section-body">
+    <h3>내 교육 확인</h3>
+    <p>대시보드 <strong>내 교육</strong> 카드에 프로그램명, 멘토, 현재 주차, 진행률이 표시됩니다. 카드 이름을 누르면 <strong>직무기술서(JD)</strong>와 <strong>교육계획</strong>(현재 주차 구간이 노란색으로 강조)을 볼 수 있습니다.</p>
+    <h3>주간보고서 작성</h3>
+    <ol class="steps">
+      <li>카드의 <span class="ui">📄 주간보고서</span> → 주차 그리드에서 작성할 주차를 클릭합니다. 현재 주차는 노란 테두리로 표시됩니다.</li>
+      <li>상단 <strong>이번 주 주제</strong>를 입력합니다 (예: "생산 라인 실습 시작").</li>
+      <li>세 섹션을 채웁니다: <strong>01 이번 주 배운 것</strong> · <strong>02 이번 주는 어땠나요</strong>(평점 선택 + 소감) · <strong>03 질문 &amp; 더 알고 싶은 것</strong></li>
+      <li>입력 내용은 <strong>자동 저장</strong>됩니다 ("저장됨 ✓"). 언제든 나가도 초안이 유지됩니다.</li>
+      <li>완성되면 <span class="ui btn-b">제출 →</span>. 주제가 비어 있으면 확인 창이 뜹니다.</li>
+    </ol>
+    <div class="grid">
+      <div class="card"><strong>제출 후 수정하려면</strong>멘토가 리뷰를 완료하기 전이라면 <span class="ui">회수하여 수정</span>으로 초안으로 되돌릴 수 있습니다.</div>
+      <div class="card"><strong>멘토 피드백 확인</strong>제출 후 하단 <strong>04 멘토 피드백</strong>에 잘한 점·다음 주 집중·Q&amp;A·진행 상태가 표시됩니다.</div>
+      <div class="card"><strong>완료된 보고서</strong>리뷰가 완료되면 잠기며 <span class="ui">🖨 출력</span>으로 PDF 저장이 가능합니다.</div>
+    </div>
+    <div class="callout gold">면담보고서는 멘토·매니저가 작성하는 관리 기록으로, 피교육자 화면에는 표시되지 않습니다.</div>
+  </div>
+</div>
+
+<!-- 04 -->
+<div class="section" id="mentor">
+  <div class="section-header c-teal"><div><h2>04 · 멘토</h2><p>주간보고서 리뷰 · 면담보고서 작성 · 정부양식 면담일지 출력</p></div><span class="badge">Mentor · Co-mentor</span></div>
+  <div class="section-body">
+    <h3>리뷰 대기 확인</h3>
+    <p>대시보드 <strong>처리 필요</strong>에 멘티가 제출한 보고서가 <span class="pill p-sub">리뷰 대기</span>로 나열됩니다. 항목을 누르면 바로 해당 주차로 이동합니다. <strong>내 멘티</strong> 카드에도 대기 건수 배지가 표시됩니다.</p>
+    <h3>주간보고서 리뷰</h3>
+    <ol class="steps">
+      <li>피교육자가 작성한 01~03 섹션을 읽습니다 (읽기 전용).</li>
+      <li><strong>04 멘토 피드백</strong>에 <em>이번 주 잘한 점 · 다음 주 집중 사항 · Q&amp;A 요약</em>을 입력합니다. 입력란을 벗어나면 자동 저장됩니다.</li>
+      <li><strong>진행 상태</strong>를 선택합니다: 정상 진행 / 소폭 조정 / 점검 필요 (필수)</li>
+      <li><span class="ui btn-b">✓ 리뷰 완료</span> → 보고서가 <span class="pill p-done">완료</span>로 잠깁니다.</li>
+    </ol>
+    <div class="callout warn">리뷰 완료 후에는 피교육자도 멘토도 수정할 수 없습니다. 재오픈이 필요하면 People Operations 또는 관리자에게 요청하세요.</div>
+    <h3>면담보고서 작성</h3>
+    <ol class="steps">
+      <li>멘티 카드의 <span class="ui">💬 면담보고서</span> → <span class="ui btn-b">+ 새 면담보고서</span></li>
+      <li><strong>면담일</strong>을 선택하고 <strong>면담내용 및 청년 건의사항</strong>을 한 칸에 작성합니다. (안내 틀: 면담내용 / 건의 및 문의 / 조치사항 / 기타)</li>
+      <li>자동 저장 후 <span class="ui btn-b">제출 →</span>. 제출한 보고서는 <span class="ui">수정하기</span>로 회수·수정하거나 <span class="ui">삭제</span>할 수 있습니다.</li>
+    </ol>
+    <h3>면담일지 출력 (청년친화강소기업 정부양식)</h3>
+    <p>면담보고서 목록 또는 멘티 카드의 <span class="ui">🖨 면담일지 출력</span>을 누르면 <strong>연번 · 성명 · 근무부서 · 면담일 · 면담내용 및 청년 건의사항</strong> 5컬럼 표가 새 창에 열립니다. 제출된 보고서만 포함되며, 근무부서는 팀의 한글명으로 표기됩니다. 우측 하단 버튼으로 인쇄/PDF 저장하세요.</p>
+  </div>
+</div>
+
+<!-- 05 -->
+<div class="section" id="manager">
+  <div class="section-header c-amber"><div><h2>05 · 매니저 · People Operations · GM</h2><p>열람 범위와 권한</p></div><span class="badge">Read · Oversight</span></div>
+  <div class="section-body">
+    <table>
+      <tr><th style="width:170px">역할</th><th>열람 범위</th><th>추가 권한</th></tr>
+      <tr><td><strong>직속 매니저</strong></td><td>내 직속 팀원의 제출된 주간·면담보고서 (<strong>내 팀</strong> 섹션)</td><td>팀원 대상 면담보고서 작성 · 면담일지 출력</td></tr>
+      <tr><td><strong>추가 열람자</strong> (관리자가 지정)</td><td>지정된 피교육자의 보고서</td><td>공동 멘토로 지정되면 리뷰 가능</td></tr>
+      <tr><td><strong>People Operations</strong></td><td>전사 모든 제출 보고서 (<strong>전사 현황</strong>)</td><td>프로그램·등록·멘토 배정·팀명 관리, 완료 보고서 재오픈</td></tr>
+      <tr><td><strong>GM</strong></td><td>전사 모든 제출 보고서</td><td>읽기 전용</td></tr>
+    </table>
+    <div class="callout">매니저 열람 범위는 <strong>직속 1단계</strong>입니다. 상위 디렉터가 특정 피교육자를 봐야 하면 관리자가 <em>추가 열람자</em>로 지정합니다. 작성 중인 초안은 작성자 본인 외 누구도 볼 수 없습니다.</div>
+    <p><strong>보고서</strong> 메뉴에서 열람 가능한 모든 피교육자 카드를 확인하고, 카드 이름 → JD·교육계획·주차 현황·면담 목록을 볼 수 있습니다.</p>
+  </div>
+</div>
+
+<!-- 06 -->
+<div class="section" id="admin">
+  <div class="section-header c-gray"><div><h2>06 · 관리자</h2><p>관리 메뉴 — Admin · People Operations</p></div><span class="badge">Admin · People Ops</span></div>
+  <div class="section-body">
+    <h3>교육 프로그램 만들기 (People Ops · Admin)</h3>
+    <ol class="steps">
+      <li><strong>관리 → 프로그램</strong> 우측 폼에서 유형(인턴십 / 신입 OJT / 경력 OJT), 한글·영문명, 시작·종료일을 입력합니다. 기간(주)은 비워두면 자동 계산됩니다.</li>
+      <li>사용 보고서(주간 / 교육훈련 / 면담)를 체크하고 상태를 <em>진행 중</em>으로 두면 바로 사용됩니다.</li>
+    </ol>
+    <h3>피교육자 등록 · 멘토 배정</h3>
+    <ol class="steps">
+      <li>프로그램 상세 우측 <strong>피교육자 등록</strong>: 피교육자, 멘토, JD, 교육계획을 입력합니다.</li>
+      <li>교육계획은 한 줄에 하나: <code>주차 | 주제 | 방법 | 담당</code> — 예: <code>1-2 | 온보딩 &amp; 안전교육 | OJT | 멘토</code></li>
+      <li>등록 후 각 카드에서 멘토 변경, 상태(진행 중/완료/중단), 개별 시작·종료일, <strong>추가 열람자</strong>(열람자 / 공동 멘토)를 관리합니다.</li>
+    </ol>
+    <h3>사용자 관리 (Admin)</h3>
+    <div class="grid">
+      <div class="card"><strong>사용자 추가</strong>입사자 프로필 + 로그인 생성. 임시 비밀번호가 <em>1회</em> 표시되니 즉시 Teams DM으로 전달하세요.</div>
+      <div class="card"><strong>임시 비밀번호 재발급</strong>비밀번호 분실 시. 기존 비밀번호는 즉시 무효화되고 다음 로그인에 변경을 강제합니다.</div>
+      <div class="card"><strong>비활성화 / 재활성화</strong>퇴사자는 비활성화 — 로그인 차단, 멘토 배정 해제, 프로필·보고서는 보존. 복귀 시 재활성화.</div>
+      <div class="card"><strong>권한 플래그</strong>Admin · People Operations · GM. 매니저·멘토 권한은 조직도와 등록에서 자동 파생됩니다.</div>
+    </div>
+    <h3>팀 · 감사 로그</h3>
+    <p><strong>팀</strong>: 10개 팀의 한글/영문명과 팀 리드를 수정합니다. 한글명은 정부양식 근무부서에 그대로 인쇄됩니다. <strong>감사 로그</strong>(Admin): 로그인, 제출, 리뷰 완료, 사용자·등록 변경 등 최근 200건.</p>
+    <div class="callout ok">데이터는 매주 월요일 0시(KST) GitHub Actions로 자동 CSV 백업되며 90일간 보관됩니다.</div>
+  </div>
+</div>
+
+<!-- 07 -->
+<div class="section" id="faq">
+  <div class="section-header c-orange"><div><h2>07 · 자주 묻는 질문</h2></div></div>
+  <div class="section-body">
+    <h3>제출했는데 수정하고 싶어요</h3>
+    <p>주간보고서: 멘토 리뷰 완료 전이면 <span class="ui">회수하여 수정</span>. 완료 후에는 People Ops/관리자에게 재오픈 요청. 면담보고서: <span class="ui">수정하기</span>로 회수 후 수정, 또는 삭제 후 재작성.</p>
+    <h3>멘티 카드가 보이지 않아요</h3>
+    <p>관리자가 해당 등록에 나를 멘토(또는 공동 멘토)로 배정해야 표시됩니다. 직속 팀원이면 <strong>내 팀</strong> 섹션에 나타납니다.</p>
+    <h3>주차는 어떻게 계산되나요?</h3>
+    <p>프로그램(또는 개별) 시작일 기준 월요일~목요일 단위로 1주차부터 셉니다. 그리드의 주차 라벨에 날짜 범위가 표시됩니다.</p>
+    <h3>모바일에서도 쓸 수 있나요?</h3>
+    <p>네. 좌측 상단 ☰ 메뉴에서 이동하며, 모든 폼과 그리드는 모바일 폭에 맞춰 재배치됩니다.</p>
+    <h3>문의</h3>
+    <p>기능·권한 문의: People Operations. 시스템 오류: 관리자(Inho Son).</p>
+  </div>
+</div>
+
+<footer>Promega Korea · Promega Biosystems Korea — Training Hub 사용자 매뉴얼 v2.0 · 2026년 9월</footer>
+</body>
+</html>
