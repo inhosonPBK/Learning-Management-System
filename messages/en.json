@@ -274,6 +274,25 @@
     "noTraining": "You are not enrolled in an active program",
     "pendingReviews": "{count} awaiting review",
     "openDrafts": "{count} unsubmitted drafts",
-    "currentWeek": "Week {week} of {total}"
+    "currentWeek": "Week {week} of {total}",
+    "companyOverviewHint": "{count} active enrollments (People Operations · GM · Admin)",
+    "quickReports": "My reports · mentees · team",
+    "quickPeople": "Browse members by team",
+    "pendingReviewsTitle": "Awaiting review",
+    "nothingPending": "Nothing awaiting review",
+    "viewAll": "View all"
+  },
+  "people": {
+    "title": "People",
+    "subtitle": "{count} active members · by team",
+    "searchPlaceholder": "Search name, title, email",
+    "clear": "Clear",
+    "lead": "Lead",
+    "you": "You"
+  },
+  "materials": {
+    "title": "Training materials",
+    "subtitle": "Onboarding · Policies · Product · Quality · Systems",
+    "comingSoon": "The materials board opens in Phase 2. Categories are ready; publishing, browsing and attachment downloads will follow."
   }
 }

@@ -274,6 +274,25 @@
     "noTraining": "진행 중인 교육 프로그램이 없습니다",
     "pendingReviews": "리뷰 대기 {count}건",
     "openDrafts": "미제출 초안 {count}건",
-    "currentWeek": "현재 {week}주차 / {total}주"
+    "currentWeek": "현재 {week}주차 / {total}주",
+    "companyOverviewHint": "진행 중 교육 {count}건 (People Operations · GM · Admin)",
+    "quickReports": "내 보고서 · 멘티 · 팀",
+    "quickPeople": "팀별 구성원 조회",
+    "pendingReviewsTitle": "리뷰 대기",
+    "nothingPending": "대기 중인 리뷰 없음",
+    "viewAll": "전체 보기"
+  },
+  "people": {
+    "title": "조직도",
+    "subtitle": "활성 구성원 {count}명 · 팀별 보기",
+    "searchPlaceholder": "이름, 직책, 이메일 검색",
+    "clear": "초기화",
+    "lead": "팀 리드",
+    "you": "나"
+  },
+  "materials": {
+    "title": "교육자료",
+    "subtitle": "온보딩 · 규정 · 제품 · 품질 · 시스템 교육 자료",
+    "comingSoon": "교육자료 게시판은 2단계에서 열립니다. 카테고리는 준비되어 있으며, 자료 등록·열람·첨부파일 다운로드 기능이 추가될 예정입니다."
   }
 }

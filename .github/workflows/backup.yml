@@ -1,0 +1,50 @@
+name: Weekly DB Backup
+
+on:
+  schedule:
+    # Sunday 15:00 UTC = Monday 00:00 KST
+    - cron: '0 15 * * 0'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TABLES: departments teams profiles programs enrollments enrollment_watchers report_types reports material_categories training_materials material_attachments audit_log
+
+    steps:
+      - name: Set backup date
+        run: echo "DATE=$(date +%Y-%m-%d)" >> $GITHUB_ENV
+
+      - name: Export tables as CSV (PostgREST)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -e
+          echo "| Table | Rows |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          for table in $TABLES; do
+            curl -sf "$SUPABASE_URL/rest/v1/$table?select=*" \
+              -H "apikey: $SERVICE_ROLE_KEY" \
+              -H "Authorization: Bearer $SERVICE_ROLE_KEY" \
+              -H "Accept: text/csv" \
+              -o "$table.csv"
+            rows=$(( $(wc -l < "$table.csv") - 1 ))
+            echo "$table: $rows rows"
+            echo "| $table | $rows |" >> $GITHUB_STEP_SUMMARY
+          done
+
+      - name: Package
+        run: |
+          zip "lms-backup-${{ env.DATE }}.zip" *.csv
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Artifact:** \`lms-backup-${{ env.DATE }}.zip\` ($(du -sh lms-backup-${{ env.DATE }}.zip | cut -f1)) · retention 90 days" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload artifact (90 days)
+        uses: actions/upload-artifact@v4
+        with:
+          name: lms-backup-${{ env.DATE }}
+          path: lms-backup-${{ env.DATE }}.zip
+          retention-days: 90
