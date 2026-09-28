@@ -35,14 +35,16 @@ export default async function ReportsHubPage({ searchParams }: { searchParams: P
     { key: "mine", title: t("myTraining"), hint: undefined, items: hub.mine, print: false },
     { key: "mentees", title: t("myMentees"), hint: t("myMenteesHint"), items: hub.mentees, print: true },
     { key: "team", title: t("myTeam"), hint: t("myTeamHint"), items: hub.team, print: true },
+    { key: "watching", title: t("watching"), hint: t("watchingHint"), items: hub.watching, print: true },
   ].filter((s) => s.items.length);
 
-  // Oversight: everything grouped by program (personal ones excluded unless filtering).
-  const personalIds = new Set([...hub.mine, ...hub.mentees, ...hub.team].map((c) => c.enrollmentId));
-  const pool = oversight ? hub.all.filter((c) => filtering || !personalIds.has(c.enrollmentId)) : [...hub.mine, ...hub.mentees, ...hub.team];
+  // Program view always lists everyone the viewer may see — complete rosters per program, even if a
+  // trainee also appears in a personal section above.
+  const pool = oversight ? hub.all : dedupeCards([...hub.mine, ...hub.mentees, ...hub.team, ...hub.watching]);
   const groups = groupByProgram(pool.filter(match), locale);
   const programs = groupByProgram(hub.all.length ? hub.all : pool, locale);
   const nothing = !personal.length && !groups.length;
+  const groupsTitle = oversight ? t("allPrograms") : t("byProgram");
 
   return (
     <Container size="xl">
@@ -80,7 +82,7 @@ export default async function ReportsHubPage({ searchParams }: { searchParams: P
 
       {groups.length > 0 && (
         <section className="mb-10">
-          {oversight && <SectionHeading title={filtering ? t("filterResults", { count: groups.reduce((a, g) => a + g.cards.length, 0) }) : t("allPrograms")} description={oversight && !filtering ? t("allProgramsHint") : undefined} />}
+          <SectionHeading title={filtering ? t("filterResults", { count: groups.reduce((a, g) => a + g.cards.length, 0) }) : groupsTitle} description={!filtering ? (oversight ? t("allProgramsHint") : t("byProgramHint")) : undefined} />
           <ProgramGroups groups={groups} labels={labels} />
         </section>
       )}
@@ -93,4 +95,9 @@ export default async function ReportsHubPage({ searchParams }: { searchParams: P
       )}
     </Container>
   );
+}
+
+function dedupeCards(cards: EnrollmentCardData[]) {
+  const seen = new Set<string>();
+  return cards.filter((c) => (seen.has(c.enrollmentId) ? false : (seen.add(c.enrollmentId), true)));
 }

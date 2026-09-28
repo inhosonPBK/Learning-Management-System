@@ -11,7 +11,10 @@ import type { Locale, Report } from "@/types/db";
 
 export interface HubData {
   mine: EnrollmentCardData[];
+  /** enrollments where the viewer is mentor or co-mentor */
   mentees: EnrollmentCardData[];
+  /** enrollments where the viewer is only an observer (explicit viewer, not a mentor) */
+  watching: EnrollmentCardData[];
   team: EnrollmentCardData[];
   all: EnrollmentCardData[];
   /** every enrollment the viewer may see (deduped) */
@@ -26,14 +29,17 @@ export interface HubData {
 export async function getHubData(viewer: Viewer, locale: Locale): Promise<HubData> {
   const oversight = viewer.isAdmin || viewer.isPeopleOps || viewer.isGm;
 
-  const [mine, mentees, team, all] = await Promise.all([
+  const menteeIdList = [...new Set([...viewer.mentorOfEnrollmentIds, ...viewer.coMentorOfEnrollmentIds])];
+  const observerIdList = viewer.watcherOfEnrollmentIds.filter((id) => !menteeIdList.includes(id));
+  const [mine, mentees, watching, team, all] = await Promise.all([
     getEnrollmentsByIds(viewer.myEnrollmentIds),
-    getEnrollmentsByIds([...viewer.mentorOfEnrollmentIds, ...viewer.coMentorOfEnrollmentIds, ...viewer.watcherOfEnrollmentIds]),
+    getEnrollmentsByIds(menteeIdList),
+    getEnrollmentsByIds(observerIdList),
     getEnrollmentsForTrainees(viewer.directReportIds),
     oversight ? allEnrollments() : Promise.resolve([] as EnrollmentWithProgram[]),
   ]);
 
-  const every = dedupe([...mine, ...mentees, ...team, ...all]);
+  const every = dedupe([...mine, ...mentees, ...watching, ...team, ...all]);
   // Second stage: three independent lookups in parallel (one network round trip instead of three).
   const [reports, profiles, teamRows, docs] = await Promise.all([
     getReportsForEnrollments(every.map((e) => e.id)),
@@ -72,6 +78,7 @@ export async function getHubData(viewer: Viewer, locale: Locale): Promise<HubDat
   return {
     mine: mine.map(toCard),
     mentees: mentees.map(toCard),
+    watching: watching.filter((e) => !menteeIds.has(e.id) && !team.some((t) => t.id === e.id)).map(toCard),
     team: team.filter((e) => !menteeIds.has(e.id)).map(toCard),
     all: all.map(toCard),
     visibleEnrollmentIds: every.map((e) => e.id),

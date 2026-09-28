@@ -325,7 +325,11 @@
     "expandAll": "전체 펼치기",
     "collapseAll": "전체 접기",
     "groupTrainees": "진행/전체",
-    "groupProgress": "평균 진도"
+    "groupProgress": "평균 진도",
+    "watching": "열람 지정",
+    "watchingHint": "관리자가 나를 열람자로 지정한 피교육자 (멘토 아님)",
+    "byProgram": "프로그램별",
+    "byProgramHint": "내가 볼 수 있는 피교육자를 프로그램 단위로 정리"
   },
   "dashboard": {
     "title": "대시보드",
@@ -352,7 +356,12 @@
     "viewAll": "전체 보기",
     "noActivePrograms": "진행 중인 프로그램이 없습니다",
     "finishedPrograms": "종료된 프로그램 {count}개 보기",
-    "quickMaterials": "전사 자료 · JD · 양식 공유"
+    "quickMaterials": "전사 자료 · JD · 양식 공유",
+    "news": "새 소식",
+    "newsHint": "새로 등록된 교육자료와 프로그램",
+    "newsMaterial": "교육자료",
+    "newsProgram": "프로그램",
+    "noNews": "새 소식이 없습니다"
   },
   "people": {
     "title": "조직도",

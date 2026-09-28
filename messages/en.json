@@ -325,7 +325,11 @@
     "expandAll": "Expand all",
     "collapseAll": "Collapse all",
     "groupTrainees": "Active/Total",
-    "groupProgress": "Avg progress"
+    "groupProgress": "Avg progress",
+    "watching": "Viewing access",
+    "watchingHint": "Trainees an admin added you to as a viewer (not as mentor)",
+    "byProgram": "By program",
+    "byProgramHint": "Everyone you can view, grouped by program"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -352,7 +356,12 @@
     "viewAll": "View all",
     "noActivePrograms": "No active programs",
     "finishedPrograms": "Show {count} finished program(s)",
-    "quickMaterials": "Shared content · JDs · templates"
+    "quickMaterials": "Shared content · JDs · templates",
+    "news": "What's new",
+    "newsHint": "Recently published materials and new programs",
+    "newsMaterial": "Material",
+    "newsProgram": "Program",
+    "noNews": "Nothing new"
   },
   "people": {
     "title": "People",

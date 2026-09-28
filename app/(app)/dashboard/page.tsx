@@ -12,7 +12,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { formatDateTime } from "@/lib/weeks";
 import { Container, SectionHeading } from "@/components/page-header";
 import { EnrollmentCard, type EnrollmentCardData } from "@/components/reports/enrollment-card";
-import type { AuditLog, Locale } from "@/types/db";
+import type { Locale } from "@/types/db";
 
 export default async function DashboardPage() {
   const viewer = await requireViewer();
@@ -25,12 +25,18 @@ export default async function DashboardPage() {
   const oversight = viewer.isAdmin || viewer.isPeopleOps || viewer.isGm;
   const staff = viewer.isAdmin || viewer.isPeopleOps;
 
-  // Recent activity: oversight roles see everything, others see their own actions.
-  let audit = createAdminClient().from("audit_log").select("*").order("id", { ascending: false }).limit(8);
-  if (!oversight) audit = audit.eq("actor_id", viewer.id);
-  const { data: auditRows } = await audit;
-  const activity = (auditRows ?? []) as AuditLog[];
-  const actors = await getProfilesMap(activity.map((a) => a.actor_id ?? ""));
+  // "What's new": announcements only — recently published materials and newly opened programs.
+  const admin = createAdminClient();
+  const [{ data: newMaterials }, { data: newPrograms }] = await Promise.all([
+    admin.from("training_materials").select("id, title, author_id, published_at").eq("is_published", true).order("published_at", { ascending: false }).limit(5),
+    admin.from("programs").select("id, name_ko, name_en, created_at").in("status", ["planned", "active"]).order("created_at", { ascending: false }).limit(3),
+  ]);
+  type NewsItem = { key: string; kind: "material" | "program"; href: string; title: string; who: string | null; at: string | null };
+  const news: NewsItem[] = [
+    ...((newMaterials ?? []) as { id: string; title: string; author_id: string | null; published_at: string | null }[]).map((m) => ({ key: `m-${m.id}`, kind: "material" as const, href: `/materials/${m.id}`, title: m.title, who: m.author_id, at: m.published_at })),
+    ...((newPrograms ?? []) as { id: string; name_ko: string; name_en: string; created_at: string }[]).map((p) => ({ key: `p-${p.id}`, kind: "program" as const, href: `/reports?program=${p.id}`, title: locale === "ko" ? p.name_ko : p.name_en, who: null, at: p.created_at })),
+  ].sort((a, b) => (b.at ?? "").localeCompare(a.at ?? "")).slice(0, 6);
+  const actors = await getProfilesMap(news.map((n) => n.who ?? ""));
 
   const labels = { weekly: tr("weekly"), interview: tr("interview"), mentor: tc("mentor"), pending: tr("pendingShort"), week: tc("week"), print: tr("printLog"), docs: tr("documents") };
   const pendingCount = todos.filter((x) => x.kind === "review").length;
@@ -120,24 +126,26 @@ export default async function DashboardPage() {
             </section>
           )}
           <section>
-            <SectionHeading title={t("recentActivity")} />
-            {activity.length ? (
+            <SectionHeading title={t("news")} description={t("newsHint")} />
+            {news.length ? (
               <ul className="space-y-3">
-                {activity.map((a) => (
-                  <li key={a.id} className="flex gap-3 text-sm">
-                    <span className="mt-1.5 size-2 shrink-0 rounded-full bg-brand-gold" />
-                    <div className="min-w-0">
-                      <div className="truncate">
-                        <span className="font-medium">{a.actor_id ? actors.get(a.actor_id)?.display_name ?? "—" : "system"}</span>{" "}
-                        <code className="rounded bg-muted px-1 text-[11px]">{a.action}</code>
+                {news.map((n) => (
+                  <li key={n.key}>
+                    <Link href={n.href} className="flex gap-3 rounded-lg text-sm hover:bg-muted/40">
+                      <span className={`mt-1.5 size-2 shrink-0 rounded-full ${n.kind === "material" ? "bg-tile-green" : "bg-brand-blue"}`} />
+                      <div className="min-w-0">
+                        <div className="truncate">
+                          <span className="text-xs font-semibold text-muted-foreground">{n.kind === "material" ? t("newsMaterial") : t("newsProgram")}</span>{" "}
+                          <span className="font-medium">{n.title}</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground">{n.who ? `${actors.get(n.who)?.display_name ?? ""} · ` : ""}{formatDateTime(n.at, locale)}</div>
                       </div>
-                      <div className="text-xs text-muted-foreground">{formatDateTime(a.created_at, locale)}</div>
-                    </div>
+                    </Link>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-muted-foreground">{t("noActivity")}</p>
+              <p className="text-sm text-muted-foreground">{t("noNews")}</p>
             )}
           </section>
         </aside>
