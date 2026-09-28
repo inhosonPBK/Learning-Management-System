@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { ArrowRight, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/status-badge";
-import { summarizeGroup, type ProgramGroup } from "@/components/reports/program-groups";
+import { summarizeGroup, type ProgramGroup } from "@/lib/data/program-groups";
 import { cn } from "@/lib/utils";
 
 const TYPE_COLOR = { intern: "bg-tile-green", new_hire: "bg-tile-blue", ojt: "bg-tile-amber" } as const;

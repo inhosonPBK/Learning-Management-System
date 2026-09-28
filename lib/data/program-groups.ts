@@ -1,6 +1,23 @@
 import type { EnrollmentCardData } from "@/components/reports/enrollment-card";
-import type { ProgramGroup } from "@/components/reports/program-groups";
 import { formatDate } from "@/lib/weeks";
+
+export interface ProgramGroup {
+  id: string;
+  name: string;
+  type: "intern" | "new_hire" | "ojt";
+  status: "planned" | "active" | "closed";
+  period: string;
+  cards: EnrollmentCardData[];
+}
+
+/** Per-program roll-up used by the hub accordion headers and the dashboard table. */
+export function summarizeGroup(cards: EnrollmentCardData[]) {
+  const active = cards.filter((c) => c.status === "active").length;
+  const pending = cards.reduce((a, c) => a + c.stats.pendingReview, 0);
+  const interviews = cards.reduce((a, c) => a + c.stats.interviews, 0);
+  const progress = cards.length ? Math.round((cards.reduce((a, c) => a + c.stats.weeklyCompleted / Math.max(1, c.totalWeeks), 0) / cards.length) * 100) : 0;
+  return { total: cards.length, active, pending, interviews, progress };
+}
 
 /** Group enrollment cards by program: active programs first, then by most recent start. */
 export function groupByProgram(cards: EnrollmentCardData[], locale: "ko" | "en"): ProgramGroup[] {

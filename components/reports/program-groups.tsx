@@ -6,25 +6,10 @@ import { ChevronDown, ChevronRight, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
-import { EnrollmentCard, type EnrollmentCardData } from "./enrollment-card";
+import { EnrollmentCard } from "./enrollment-card";
 import { cn } from "@/lib/utils";
 
-export interface ProgramGroup {
-  id: string;
-  name: string;
-  type: "intern" | "new_hire" | "ojt";
-  status: "planned" | "active" | "closed";
-  period: string;
-  cards: EnrollmentCardData[];
-}
-
-export function summarizeGroup(cards: EnrollmentCardData[]) {
-  const active = cards.filter((c) => c.status === "active").length;
-  const pending = cards.reduce((a, c) => a + c.stats.pendingReview, 0);
-  const interviews = cards.reduce((a, c) => a + c.stats.interviews, 0);
-  const progress = cards.length ? Math.round(cards.reduce((a, c) => a + c.stats.weeklyCompleted / Math.max(1, c.totalWeeks), 0) / cards.length * 100) : 0;
-  return { total: cards.length, active, pending, interviews, progress };
-}
+import { summarizeGroup, type ProgramGroup } from "@/lib/data/program-groups";
 
 const TYPE_COLOR = { intern: "bg-tile-green", new_hire: "bg-tile-blue", ojt: "bg-tile-amber" } as const;
 
