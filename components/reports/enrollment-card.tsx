@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { FileText, MessageSquareText, Paperclip, Printer } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/status-badge";
-import { initialsOf } from "@/components/shell/nav-config";
 import { cn } from "@/lib/utils";
 import type { EnrollmentStats } from "@/lib/data/reports";
 
 export interface EnrollmentCardData {
   enrollmentId: string;
   traineeName: string;
+  traineeAvatarUrl: string | null;
   traineeTitle: string | null;
   teamName: string | null;
   teamCode: string | null;
@@ -33,9 +33,7 @@ export function EnrollmentCard({ d, labels, showPrint }: { d: EnrollmentCardData
   return (
     <div className="flex flex-col rounded-xl border bg-white p-5 transition-shadow hover:shadow-md">
       <div className="flex items-start gap-3">
-        <Avatar className="size-10">
-          <AvatarFallback className="bg-brand-navy text-xs font-bold text-white">{initialsOf(d.traineeName)}</AvatarFallback>
-        </Avatar>
+        <UserAvatar name={d.traineeName} src={d.traineeAvatarUrl} className="size-10" />
         <div className="min-w-0 flex-1">
           <Link href={`/trainees/${d.enrollmentId}`} className="block truncate text-base font-semibold text-brand-navy hover:underline">{d.traineeName}</Link>
           <div className="truncate text-xs text-muted-foreground">{[d.traineeTitle, d.teamName].filter(Boolean).join(" · ")}</div>

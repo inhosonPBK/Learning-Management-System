@@ -8,6 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ActionForm } from "@/components/forms/action-form";
 import { ProfileFields } from "../profile-fields";
+import { AvatarUploader } from "@/components/avatar-uploader";
+import { avatarUrl } from "@/lib/avatars";
 import { updateUser, updateFlags, resetTempPassword, deactivateUser, reactivateUser } from "../actions";
 import type { Locale } from "@/types/db";
 
@@ -46,6 +48,9 @@ export default async function EditUserPage({ params }: { params: Promise<{ id: s
         <div className="space-y-6 lg:col-span-2">
           <Card>
             <CardContent className="pt-6">
+              <div className="mb-6 border-b pb-6">
+                <AvatarUploader profileId={profile.id} name={profile.display_name} currentUrl={avatarUrl(profile.avatar_path)} />
+              </div>
               <ActionForm action={update} submitLabel={tc("save")} successMessage={tc("saved")}>
                 <ProfileFields profile={profile} teams={teams} departments={departments} managers={profiles.filter((p) => p.is_active)} locale={locale} />
               </ActionForm>

@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronRight, Mail, Users } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { initialsOf } from "@/components/shell/nav-config";
 import { cn } from "@/lib/utils";
 
 export interface PersonNode {
@@ -17,6 +16,7 @@ export interface PersonNode {
   isActive: boolean;
   isIntern: boolean;
   isYou: boolean;
+  avatarUrl: string | null;
   children: PersonNode[];
 }
 
@@ -124,11 +124,9 @@ function TeamCard({ team, open, onToggle, labels }: { team: TeamNode; open: bool
         className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left hover:bg-muted/40"
       >
         {team.lead ? (
-          <Avatar className="size-10 border-2 border-brand-yellow">
-            <AvatarFallback className="bg-brand-navy text-xs font-bold text-white">{initialsOf(team.lead.name)}</AvatarFallback>
-          </Avatar>
+          <UserAvatar name={team.lead.name} src={team.lead.avatarUrl} className="size-10 border-2 border-brand-yellow" />
         ) : (
-          <Avatar className="size-10"><AvatarFallback className="bg-muted text-xs">—</AvatarFallback></Avatar>
+          <UserAvatar name="—" className="size-10" fallbackClassName="bg-muted text-muted-foreground" />
         )}
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 text-sm">
@@ -176,9 +174,7 @@ function PersonRow({ person, labels }: { person: PersonNode; labels: OrgChartLab
   const manages = person.children.length;
   return (
     <div className={cn("flex items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-muted/40", !person.isActive && "opacity-50")}>
-      <Avatar className="size-7">
-        <AvatarFallback className={cn("text-[10px] font-bold", manages ? "bg-brand-blue text-white" : "bg-brand-navy text-white")}>{initialsOf(person.name)}</AvatarFallback>
-      </Avatar>
+      <UserAvatar name={person.name} src={person.avatarUrl} className="size-7" fallbackClassName={cn("text-[10px]", manages ? "bg-brand-blue" : "bg-brand-navy")} />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 text-sm leading-tight">
           <span className="font-medium">{person.name}</span>
@@ -198,9 +194,7 @@ function PersonRow({ person, labels }: { person: PersonNode; labels: OrgChartLab
 function PersonCard({ person, labels, highlight, className, badge }: { person: PersonNode; labels: OrgChartLabels; highlight?: boolean; className?: string; badge?: string }) {
   return (
     <div className={cn("flex items-center gap-4 rounded-xl border bg-white px-5 py-4 shadow-sm", highlight && "border-brand-yellow ring-2 ring-brand-yellow/30", className)}>
-      <Avatar className="size-12 border-2 border-brand-yellow">
-        <AvatarFallback className="bg-brand-navy text-sm font-bold text-white">{initialsOf(person.name)}</AvatarFallback>
-      </Avatar>
+      <UserAvatar name={person.name} src={person.avatarUrl} className="size-12 border-2 border-brand-yellow" fallbackClassName="text-sm" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="text-base font-semibold text-brand-navy">{person.name}</span>

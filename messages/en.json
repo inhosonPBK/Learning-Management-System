@@ -15,7 +15,7 @@
     "notifications": "Notifications",
     "help": "Help",
     "language": "Language",
-    "settings": "Settings",
+    "settings": "My profile",
     "signOut": "Sign out",
     "adminUsers": "Users",
     "adminPrograms": "Programs",
@@ -405,5 +405,24 @@
     "attachmentsHint": "Click to download (links are valid for 1 minute)",
     "noAttachments": "No files attached",
     "deleteMaterial": "Delete material"
+  },
+  "avatar": {
+    "upload": "Upload photo",
+    "change": "Change photo",
+    "remove": "Remove",
+    "hint": "A front-facing photo works best · auto-cropped to a 256 px square",
+    "notImage": "Only image files are allowed",
+    "updated": "Profile photo updated",
+    "failed": "Upload failed",
+    "removeConfirm": "Remove your profile photo?"
+  },
+  "settings": {
+    "title": "My profile",
+    "subtitle": "Photo, basic details, password",
+    "photo": "Profile photo",
+    "photoHint": "Shown in the org chart, report cards and the top menu",
+    "details": "Details",
+    "detailsHint": "Org details are maintained by People Operations (ask an admin for changes)",
+    "security": "Security"
   }
 }

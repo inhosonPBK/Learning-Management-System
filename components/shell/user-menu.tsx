@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { KeyRound, LogOut, Settings2 } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { KeyRound, LogOut, Settings2, UserRound } from "lucide-react";
+import { UserAvatar } from "@/components/user-avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,9 +30,7 @@ export function UserMenu({ user }: { user: ShellUser }) {
           />
         }
       >
-        <Avatar className="size-9 border-2 border-brand-yellow">
-          <AvatarFallback className="bg-brand-navy text-xs font-bold text-white">{user.initials}</AvatarFallback>
-        </Avatar>
+        <UserAvatar name={user.displayName} src={user.avatarUrl} className="size-9 border-2 border-brand-yellow" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-64">
         <DropdownMenuGroup>
@@ -47,6 +45,10 @@ export function UserMenu({ user }: { user: ShellUser }) {
           </DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
+        <DropdownMenuItem render={<Link href="/settings" />}>
+          <UserRound />
+          {t("settings")}
+        </DropdownMenuItem>
         <DropdownMenuItem render={<Link href="/change-password" />}>
           <KeyRound />
           {ta("changeTitle")}

@@ -47,6 +47,7 @@ export interface Profile {
   is_active: boolean
   must_change_password: boolean
   locale: Locale
+  avatar_path: string | null
   last_login_at: string | null
   deactivated_at: string | null
   created_at: string

@@ -26,6 +26,7 @@ export interface ShellUser {
   jobTitle: string | null;
   teamName: string | null;
   initials: string;
+  avatarUrl: string | null;
   isStaff: boolean;
   isAdmin: boolean;
 }

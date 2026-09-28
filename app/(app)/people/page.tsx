@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import { requireViewer } from "@/lib/auth/viewer";
 import { getAllProfiles, getTeams, teamLabel } from "@/lib/data/org";
+import { avatarUrl } from "@/lib/avatars";
 import { Container, PageHeader } from "@/components/page-header";
 import { OrgChart, type EntityNode, type PersonNode, type TeamNode } from "@/components/people/org-chart";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ export default async function PeoplePage({ searchParams }: { searchParams: Promi
     isActive: p.is_active,
     isIntern: p.employee_type === "Intern",
     isYou: p.id === viewer.id,
+    avatarUrl: avatarUrl(p.avatar_path),
     children,
   });
 

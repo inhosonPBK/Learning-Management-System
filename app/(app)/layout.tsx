@@ -5,6 +5,7 @@ import { getTodos } from "@/lib/data/todos";
 import { GlobalHeader } from "@/components/shell/global-header";
 import { SecondaryNav } from "@/components/shell/secondary-nav";
 import { initialsOf, type ShellUser } from "@/components/shell/nav-config";
+import { avatarUrl } from "@/lib/avatars";
 
 export default async function AppLayout({ children }: LayoutProps<"/">) {
   const viewer = await requireViewer();
@@ -25,6 +26,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
     jobTitle: viewer.profile.job_title,
     teamName,
     initials: initialsOf(viewer.profile.display_name),
+    avatarUrl: avatarUrl(viewer.profile.avatar_path),
     isStaff: viewer.isAdmin || viewer.isPeopleOps,
     isAdmin: viewer.isAdmin,
   };

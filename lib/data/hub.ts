@@ -4,6 +4,7 @@ import { getEnrollmentsByIds, getEnrollmentsForTrainees, programLabel, type Enro
 import { getReportsForEnrollments, summarize } from "@/lib/data/reports";
 import { getProfilesMap, getTeams, teamLabel } from "@/lib/data/org";
 import { getAttachmentsForOwners } from "@/lib/files/data";
+import { avatarUrl } from "@/lib/avatars";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { currentWeek, totalWeeks } from "@/lib/weeks";
 import type { EnrollmentCardData } from "@/components/reports/enrollment-card";
@@ -55,6 +56,7 @@ export async function getHubData(viewer: Viewer, locale: Locale): Promise<HubDat
     return {
       enrollmentId: e.id,
       traineeName: trainee?.display_name ?? "—",
+      traineeAvatarUrl: avatarUrl(trainee?.avatar_path),
       traineeTitle: trainee?.job_title ?? null,
       teamName: teamLabel(teams.get(trainee?.team_code ?? ""), locale),
       teamCode: trainee?.team_code ?? null,

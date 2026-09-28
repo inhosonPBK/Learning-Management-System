@@ -26,6 +26,10 @@ export function InterviewForm({ enrollmentId, initialReport, canEdit, canDelete 
   const [hint, setHint] = useState("");
   const [busy, setBusy] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // The report id is tracked in a ref (updated synchronously) and saves are serialized, so a second
+  // autosave fired while the first one is still creating the row reuses that row instead of inserting twice.
+  const reportIdRef = useRef<string | undefined>(initialReport?.id);
+  const inFlight = useRef<Promise<unknown>>(Promise.resolve());
 
   const status = report?.status ?? "draft";
   const locked = status !== "draft";
@@ -37,23 +41,29 @@ export function InterviewForm({ enrollmentId, initialReport, canEdit, canDelete 
       if (!editable) return;
       if (timer.current) clearTimeout(timer.current);
       setHint(tc("saving"));
-      timer.current = setTimeout(async () => {
-        const res = await saveInterviewDraft({ reportId: report?.id, enrollmentId, reportDate: nextDate, content: { content: nextContent } });
-        if ("error" in res) { setHint(""); if (res.error !== "date-required") toast.error(res.error); return; }
-        if (!report) router.replace(`/reports/interview/${enrollmentId}/${res.data.id}`);
-        setReport(res.data);
-        setHint(tc("saved") + " ✓");
-        setTimeout(() => setHint(""), 1500);
+      timer.current = setTimeout(() => {
+        inFlight.current = inFlight.current.then(async () => {
+          const isNew = !reportIdRef.current;
+          const res = await saveInterviewDraft({ reportId: reportIdRef.current, enrollmentId, reportDate: nextDate, content: { content: nextContent } });
+          if ("error" in res) { setHint(""); if (res.error !== "date-required") toast.error(res.error); return; }
+          reportIdRef.current = res.data.id;
+          setReport(res.data);
+          if (isNew) router.replace(`/reports/interview/${enrollmentId}/${res.data.id}`);
+          setHint(tc("saved") + " ✓");
+          setTimeout(() => setHint(""), 1500);
+        });
       }, 800);
     },
-    [editable, enrollmentId, report, router, tc],
+    [editable, enrollmentId, router, tc],
   );
 
   async function onSubmit() {
     if (!content.trim() && !window.confirm(t("submitEmptyInterview"))) return;
     setBusy(true);
     if (timer.current) clearTimeout(timer.current);
-    const res = await submitInterview({ reportId: report?.id, enrollmentId, reportDate: date, content: { content } });
+    await inFlight.current; // never submit while a create/save is still in progress
+    const res = await submitInterview({ reportId: reportIdRef.current, enrollmentId, reportDate: date, content: { content } });
+    if (!("error" in res)) reportIdRef.current = res.data.id;
     setBusy(false);
     if ("error" in res) return toast.error(res.error);
     setReport(res.data);
