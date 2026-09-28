@@ -202,7 +202,12 @@
     "draftInterview": "면담보고서 초안 — 제출 필요",
     "weeklyDue": "이번 주({week}주차) 주간보고서 작성",
     "noMentor": "{who} · 멘토 미배정",
-    "kind": { "review": "리뷰", "draft": "초안", "weekly_due": "이번 주", "no_mentor": "배정" }
+    "kind": {
+      "review": "리뷰",
+      "draft": "초안",
+      "weekly_due": "이번 주",
+      "no_mentor": "배정"
+    }
   },
   "files": {
     "upload": "파일 업로드",
@@ -254,8 +259,17 @@
     "s3Hint": "불명확한 점, 멘토·매니저에게 묻고 싶은 것, 더 파고들고 싶은 주제",
     "s3Placeholder": "질문이나 궁금한 점을 적어주세요…",
     "s4Title": "멘토 피드백",
-    "rating": { "Excellent": "아주 좋았음", "Good": "좋았음", "Okay": "보통", "Tough": "힘들었음" },
-    "progress": { "On Track": "정상 진행", "Minor Adjustment": "소폭 조정", "Review Required": "점검 필요" },
+    "rating": {
+      "Excellent": "아주 좋았음",
+      "Good": "좋았음",
+      "Okay": "보통",
+      "Tough": "힘들었음"
+    },
+    "progress": {
+      "On Track": "정상 진행",
+      "Minor Adjustment": "소폭 조정",
+      "Review Required": "점검 필요"
+    },
     "review": {
       "good": "이번 주 잘한 점",
       "goodPh": "피교육자가 이번 주 잘한 점…",
@@ -299,7 +313,19 @@
     "editAgain": "수정하기",
     "backToList": "목록으로",
     "deleteConfirm": "이 면담보고서를 삭제하시겠습니까?\n삭제 후에는 복구할 수 없습니다.",
-    "submittedCount": "건 제출"
+    "submittedCount": "건 제출",
+    "hubSubtitleOversight": "전사 교육 프로그램을 한눈에 — 프로그램을 펼쳐 인원별 보고서로 이동",
+    "allPrograms": "전사 프로그램",
+    "allProgramsHint": "진행 중 프로그램은 펼쳐진 상태, 종료된 프로그램은 접힌 상태로 표시됩니다",
+    "filterAllPrograms": "모든 프로그램",
+    "filterAllTeams": "모든 팀",
+    "filterNamePlaceholder": "피교육자 · 멘토 이름",
+    "filterResults": "검색 결과 {count}명",
+    "finished": "종료",
+    "expandAll": "전체 펼치기",
+    "collapseAll": "전체 접기",
+    "groupTrainees": "진행/전체",
+    "groupProgress": "평균 진도"
   },
   "dashboard": {
     "title": "대시보드",
@@ -323,7 +349,9 @@
     "quickPeople": "팀별 구성원 조회",
     "pendingReviewsTitle": "리뷰 대기",
     "nothingPending": "대기 중인 리뷰 없음",
-    "viewAll": "전체 보기"
+    "viewAll": "전체 보기",
+    "noActivePrograms": "진행 중인 프로그램이 없습니다",
+    "finishedPrograms": "종료된 프로그램 {count}개 보기"
   },
   "people": {
     "title": "조직도",

@@ -202,7 +202,12 @@
     "draftInterview": "Interview report draft — submit",
     "weeklyDue": "Write this week's (week {week}) report",
     "noMentor": "{who} · no mentor assigned",
-    "kind": { "review": "Review", "draft": "Draft", "weekly_due": "This week", "no_mentor": "Assign" }
+    "kind": {
+      "review": "Review",
+      "draft": "Draft",
+      "weekly_due": "This week",
+      "no_mentor": "Assign"
+    }
   },
   "files": {
     "upload": "Upload files",
@@ -254,8 +259,17 @@
     "s3Hint": "Anything unclear, questions for the mentor or manager, topics to explore further.",
     "s3Placeholder": "Write your questions or curiosities here…",
     "s4Title": "Mentor Feedback",
-    "rating": { "Excellent": "Excellent", "Good": "Good", "Okay": "Okay", "Tough": "Tough" },
-    "progress": { "On Track": "On Track", "Minor Adjustment": "Minor Adjustment", "Review Required": "Review Required" },
+    "rating": {
+      "Excellent": "Excellent",
+      "Good": "Good",
+      "Okay": "Okay",
+      "Tough": "Tough"
+    },
+    "progress": {
+      "On Track": "On Track",
+      "Minor Adjustment": "Minor Adjustment",
+      "Review Required": "Review Required"
+    },
     "review": {
       "good": "This week good at",
       "goodPh": "What the trainee did well this week…",
@@ -299,7 +313,19 @@
     "editAgain": "Edit",
     "backToList": "Back to list",
     "deleteConfirm": "Delete this interview report?\nThis cannot be undone.",
-    "submittedCount": "submitted"
+    "submittedCount": "submitted",
+    "hubSubtitleOversight": "All training programs at a glance — expand a program to reach each trainee",
+    "allPrograms": "All programs",
+    "allProgramsHint": "Active programs start expanded, finished ones collapsed",
+    "filterAllPrograms": "All programs",
+    "filterAllTeams": "All teams",
+    "filterNamePlaceholder": "Trainee or mentor name",
+    "filterResults": "{count} result(s)",
+    "finished": "Finished",
+    "expandAll": "Expand all",
+    "collapseAll": "Collapse all",
+    "groupTrainees": "Active/Total",
+    "groupProgress": "Avg progress"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -323,7 +349,9 @@
     "quickPeople": "Browse members by team",
     "pendingReviewsTitle": "Awaiting review",
     "nothingPending": "Nothing awaiting review",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "noActivePrograms": "No active programs",
+    "finishedPrograms": "Show {count} finished program(s)"
   },
   "people": {
     "title": "People",

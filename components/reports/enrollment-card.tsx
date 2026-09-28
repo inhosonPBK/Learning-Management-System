@@ -12,7 +12,13 @@ export interface EnrollmentCardData {
   traineeName: string;
   traineeTitle: string | null;
   teamName: string | null;
+  teamCode: string | null;
   programName: string;
+  programId: string;
+  programType: "intern" | "new_hire" | "ojt";
+  programStatus: "planned" | "active" | "closed";
+  programStart: string;
+  programEnd: string;
   mentorName: string | null;
   currentWeek: number;
   totalWeeks: number;

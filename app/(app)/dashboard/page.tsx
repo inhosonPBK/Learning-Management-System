@@ -5,6 +5,8 @@ import { requireViewer } from "@/lib/auth/viewer";
 import { getHubData } from "@/lib/data/hub";
 import { getTodos } from "@/lib/data/todos";
 import { TodoList } from "@/components/dashboard/todo-list";
+import { ProgramOverview } from "@/components/dashboard/program-overview";
+import { groupByProgram } from "@/lib/data/program-groups";
 import { getProfilesMap } from "@/lib/data/org";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatDateTime } from "@/lib/weeks";
@@ -100,6 +102,7 @@ export default async function DashboardPage() {
             <section>
               <SectionHeading title={t("companyOverview")} description={t("companyOverviewHint", { count: allActive.length, finished: hub.all.length - allActive.length })} actions={<MoreLink href="/reports" label={t("viewAll")} />} />
               <OverviewStats cards={allActive.length ? allActive : hub.all} labels={{ trainees: tc("trainee"), reviewed: tr("statCompleted"), pending: tr("statSubmitted"), interviews: tr("interview") }} />
+              <div className="mt-4"><ProgramOverview groups={groupByProgram(hub.all, locale)} /></div>
             </section>
           )}
           {nothing && <div className="rounded-xl border border-dashed bg-white p-12 text-center text-sm text-muted-foreground">{t("noTraining")}</div>}
