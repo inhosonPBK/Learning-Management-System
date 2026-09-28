@@ -38,7 +38,7 @@ export default async function DashboardPage() {
   const quick = [
     { href: "/reports", icon: FileText, label: tn("reports"), sub: t("quickReports"), color: "text-brand-blue" },
     { href: "/reports", icon: ClipboardCheck, label: t("pendingReviewsTitle"), sub: pendingCount ? t("pendingReviews", { count: pendingCount }) : t("nothingPending"), color: pendingCount ? "text-status-draft" : "text-status-completed" },
-    { href: "/materials", icon: BookOpen, label: tn("materials"), sub: tc("comingSoon"), color: "text-tile-green" },
+    { href: "/materials", icon: BookOpen, label: tn("materials"), sub: t("quickMaterials"), color: "text-tile-green" },
     { href: "/people", icon: Users, label: tn("people"), sub: t("quickPeople"), color: "text-tile-amber" },
   ];
 

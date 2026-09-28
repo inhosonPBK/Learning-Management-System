@@ -351,7 +351,8 @@
     "nothingPending": "대기 중인 리뷰 없음",
     "viewAll": "전체 보기",
     "noActivePrograms": "진행 중인 프로그램이 없습니다",
-    "finishedPrograms": "종료된 프로그램 {count}개 보기"
+    "finishedPrograms": "종료된 프로그램 {count}개 보기",
+    "quickMaterials": "전사 자료 · JD · 양식 공유"
   },
   "people": {
     "title": "조직도",

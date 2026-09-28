@@ -351,7 +351,8 @@
     "nothingPending": "Nothing awaiting review",
     "viewAll": "View all",
     "noActivePrograms": "No active programs",
-    "finishedPrograms": "Show {count} finished program(s)"
+    "finishedPrograms": "Show {count} finished program(s)",
+    "quickMaterials": "Shared content · JDs · templates"
   },
   "people": {
     "title": "People",
