@@ -16,6 +16,8 @@ export default async function ReportsHubPage() {
 
   const labels = { weekly: t("weekly"), interview: t("interview"), mentor: tc("mentor"), pending: t("pendingShort"), week: tc("week"), print: t("printLog"), docs: t("documents") };
   const shownAll = hub.all.filter((a) => ![...hub.mine, ...hub.mentees, ...hub.team].some((x) => x.enrollmentId === a.enrollmentId));
+  const allActive = shownAll.filter((a) => a.status === "active");
+  const allFinished = shownAll.filter((a) => a.status !== "active");
   const nothing = !hub.mine.length && !hub.mentees.length && !hub.team.length && !shownAll.length;
 
   return (
@@ -40,10 +42,16 @@ export default async function ReportsHubPage() {
           <CardGrid items={hub.team} showPrint labels={labels} />
         </section>
       )}
-      {oversight && shownAll.length > 0 && (
+      {oversight && allActive.length > 0 && (
         <section className="mb-10">
           <SectionHeading title={t("allActive")} description={t("allActiveHint")} />
-          <CardGrid items={shownAll} showPrint labels={labels} />
+          <CardGrid items={allActive} showPrint labels={labels} />
+        </section>
+      )}
+      {oversight && allFinished.length > 0 && (
+        <section className="mb-10">
+          <SectionHeading title={t("allFinished")} description={t("allFinishedHint")} />
+          <CardGrid items={allFinished} showPrint labels={labels} />
         </section>
       )}
       {nothing && (

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { FileText, MessageSquareText, Paperclip, Printer } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/status-badge";
 import { initialsOf } from "@/components/shell/nav-config";
 import { cn } from "@/lib/utils";
 import type { EnrollmentStats } from "@/lib/data/reports";
@@ -34,6 +35,7 @@ export function EnrollmentCard({ d, labels, showPrint }: { d: EnrollmentCardData
           <div className="truncate text-xs text-muted-foreground">{[d.traineeTitle, d.teamName].filter(Boolean).join(" · ")}</div>
           <div className="mt-0.5 truncate text-xs text-muted-foreground">{d.programName}{d.mentorName ? ` · ${labels.mentor}: ${d.mentorName}` : ""}</div>
         </div>
+        {d.status !== "active" && <StatusBadge status={d.status} />}
         {d.stats.pendingReview > 0 && <Badge className="bg-brand-yellow text-brand-navy-deep">{labels.pending} {d.stats.pendingReview}</Badge>}
       </div>
 

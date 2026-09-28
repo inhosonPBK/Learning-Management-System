@@ -40,6 +40,7 @@ export default async function DashboardPage() {
     { href: "/people", icon: Users, label: tn("people"), sub: t("quickPeople"), color: "text-tile-amber" },
   ];
 
+  const allActive = hub.all.filter((c) => c.status === "active");
   const nothing = !hub.mine.length && !hub.mentees.length && !hub.team.length && !(oversight && hub.all.length);
 
   return (
@@ -97,8 +98,8 @@ export default async function DashboardPage() {
           )}
           {oversight && (
             <section>
-              <SectionHeading title={t("companyOverview")} description={t("companyOverviewHint", { count: hub.all.length })} actions={<MoreLink href="/reports" label={t("viewAll")} />} />
-              <OverviewStats cards={hub.all} labels={{ trainees: tc("trainee"), reviewed: tr("statCompleted"), pending: tr("statSubmitted"), interviews: tr("interview") }} />
+              <SectionHeading title={t("companyOverview")} description={t("companyOverviewHint", { count: allActive.length, finished: hub.all.length - allActive.length })} actions={<MoreLink href="/reports" label={t("viewAll")} />} />
+              <OverviewStats cards={allActive.length ? allActive : hub.all} labels={{ trainees: tc("trainee"), reviewed: tr("statCompleted"), pending: tr("statSubmitted"), interviews: tr("interview") }} />
             </section>
           )}
           {nothing && <div className="rounded-xl border border-dashed bg-white p-12 text-center text-sm text-muted-foreground">{t("noTraining")}</div>}

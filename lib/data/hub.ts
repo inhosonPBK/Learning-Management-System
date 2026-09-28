@@ -30,7 +30,7 @@ export async function getHubData(viewer: Viewer, locale: Locale): Promise<HubDat
     getEnrollmentsByIds(viewer.myEnrollmentIds),
     getEnrollmentsByIds([...viewer.mentorOfEnrollmentIds, ...viewer.coMentorOfEnrollmentIds, ...viewer.watcherOfEnrollmentIds]),
     getEnrollmentsForTrainees(viewer.directReportIds),
-    oversight ? allActiveEnrollments() : Promise.resolve([] as EnrollmentWithProgram[]),
+    oversight ? allEnrollments() : Promise.resolve([] as EnrollmentWithProgram[]),
   ]);
 
   const every = dedupe([...mine, ...mentees, ...team, ...all]);
@@ -74,8 +74,9 @@ export async function getHubData(viewer: Viewer, locale: Locale): Promise<HubDat
   };
 }
 
-async function allActiveEnrollments(): Promise<EnrollmentWithProgram[]> {
-  const { data } = await createAdminClient().from("enrollments").select("id").eq("status", "active");
+/** Oversight roles see every enrollment; active ones first, then the most recently completed. */
+async function allEnrollments(): Promise<EnrollmentWithProgram[]> {
+  const { data } = await createAdminClient().from("enrollments").select("id").order("status").order("completed_at", { ascending: false, nullsFirst: true });
   return getEnrollmentsByIds((data ?? []).map((r) => r.id));
 }
 
